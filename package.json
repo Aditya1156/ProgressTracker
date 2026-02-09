@@ -7,10 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "node --loader tsx prisma/seed.mjs"
-  },
-  "prisma": {
-    "seed": "node --loader tsx prisma/seed.mjs"
+    "db:schema": "psql $DATABASE_URL < supabase/schema.sql",
+    "db:seed": "psql $DATABASE_URL < supabase/seed.sql",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
