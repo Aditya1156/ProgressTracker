@@ -1,231 +1,321 @@
-"use client";
+import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/auth";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import {
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  BookOpen,
+  Target,
+  ArrowRight,
+} from "lucide-react";
+import { classifyLearner, detectTrend, predictRisk, fmtPct, formatDate } from "@/lib/utils";
+import Link from "next/link";
 
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import StatCard from "@/components/StatCard";
-import { ProgressLineChart } from "@/components/Charts";
-import { classifyLearner, detectTrend, predictRisk } from "@/lib/utils";
-import { Trophy, Target, TrendingUp, AlertTriangle, BookOpen, Award } from "lucide-react";
+export default async function StudentDashboard() {
+  const user = await getUser();
+  const supabase = await createClient();
 
-interface StudentData {
-  student: {
-    id: string;
-    rollNo: string;
-    department: string;
-    batch: string;
-    marks: {
-      id: string;
-      marksObtained: number;
-      exam: { id: string; name: string; subject: string; maxMarks: number; date: string; type: string };
-    }[];
-    user: { name: string; email: string };
-  };
-  analytics: {
-    avgPercent: number;
-    recentScores: number[];
-    totalMarks: number;
-    totalMaxMarks: number;
-  };
-}
+  // Get student record
+  const { data: student } = await supabase
+    .from("students")
+    .select("id, roll_no, semester, department_id, departments(name)")
+    .eq("profile_id", user.id)
+    .single();
 
-export default function StudentDashboard() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const [data, setData] = useState<StudentData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [rank, setRank] = useState<number | null>(null);
-  const [totalStudents, setTotalStudents] = useState(0);
-
-  useEffect(() => {
-    if (status === "unauthenticated") router.push("/login");
-    if (session?.user?.role === "ADMIN" && status === "authenticated") router.push("/dashboard");
-  }, [session, status, router]);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const studentId = (session?.user as any)?.studentId;
-        if (!studentId) return;
-
-        const [studentRes, analyticsRes] = await Promise.all([
-          fetch(`/api/students/${studentId}`),
-          fetch("/api/analytics"),
-        ]);
-        const studentData = await studentRes.json();
-        const analyticsData = await analyticsRes.json();
-
-        setData(studentData);
-        setTotalStudents(analyticsData.summary?.totalStudents || 0);
-
-        // Find this student's rank
-        const myAnalytics = analyticsData.analytics?.find(
-          (a: any) => a.studentId === studentId
-        );
-        if (myAnalytics) setRank(myAnalytics.rank);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    if (status === "authenticated") fetchData();
-  }, [status, session]);
-
-  if (loading || status === "loading") {
+  if (!student) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="space-y-4">
+        <h1 className="text-xl font-semibold text-slate-900">Welcome, {user.fullName}</h1>
+        <Card>
+          <CardContent className="py-12 text-center text-muted-foreground">
+            <p>Your student profile hasn&apos;t been set up yet.</p>
+            <p className="text-sm mt-1">Please contact your department administrator.</p>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
-  if (!data?.student) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-slate-500">Student data not found.</p>
-      </div>
-    );
+  // Get marks with exam & subject info
+  const { data: marks } = await supabase
+    .from("marks")
+    .select(`
+      marks_obtained,
+      created_at,
+      exams (
+        name,
+        type,
+        max_marks,
+        exam_date,
+        subjects (name, code)
+      )
+    `)
+    .eq("student_id", student.id)
+    .order("created_at", { ascending: false });
+
+  // Get unread feedback count
+  const { count: unreadFeedback } = await supabase
+    .from("feedback")
+    .select("*", { count: "exact", head: true })
+    .eq("student_id", student.id)
+    .eq("is_read", false);
+
+  // ── Compute analytics ──
+  const allMarks = marks ?? [];
+  const percentages = allMarks.map((m) => {
+    const exam = m.exams as any;
+    return exam?.max_marks ? (m.marks_obtained / exam.max_marks) * 100 : 0;
+  });
+
+  const avg =
+    percentages.length > 0
+      ? percentages.reduce((a, b) => a + b, 0) / percentages.length
+      : 0;
+
+  const category = classifyLearner(avg);
+  const trend = detectTrend(percentages.slice().reverse()); // oldest first for trend
+  const risk = predictRisk(avg, trend.label);
+
+  // Recent 5 results
+  const recentResults = allMarks.slice(0, 5);
+
+  // Subject-wise averages
+  const subjectMap = new Map<string, { total: number; max: number; count: number }>();
+  for (const m of allMarks) {
+    const exam = m.exams as any;
+    if (!exam?.subjects?.code || !exam?.max_marks) continue;
+    const key = exam.subjects.code;
+    const existing = subjectMap.get(key) || { total: 0, max: 0, count: 0 };
+    existing.total += m.marks_obtained;
+    existing.max += exam.max_marks;
+    existing.count += 1;
+    subjectMap.set(key, existing);
   }
 
-  const { student, analytics } = data;
-  const classification = classifyLearner(analytics.avgPercent);
-  const trend = detectTrend(analytics.recentScores);
-  const risk = predictRisk(analytics.avgPercent, trend.label);
+  const subjectAverages = Array.from(subjectMap.entries())
+    .map(([code, data]) => ({
+      code,
+      avg: (data.total / data.max) * 100,
+      exams: data.count,
+    }))
+    .sort((a, b) => b.avg - a.avg);
 
-  // Chart data
-  const chartData = student.marks.map((m) => ({
-    name: `${m.exam.subject.substring(0, 6)}`,
-    score: Math.round((m.marksObtained / m.exam.maxMarks) * 100),
-  }));
+  const TrendIcon =
+    trend.label === "Improving"
+      ? TrendingUp
+      : trend.label === "Declining"
+      ? TrendingDown
+      : Minus;
 
-  // Improvement tips based on classification
-  const tips = [];
-  if (classification.label === "Slow Learner") {
-    tips.push("Focus on fundamentals and attend extra tutorials");
-    tips.push("Practice regularly with previous exam papers");
-    tips.push("Seek help from teachers for difficult topics");
-  } else if (classification.label === "Average Learner") {
-    tips.push("Consistent revision will help cross the 75% mark");
-    tips.push("Focus on weak subjects to balance your score");
-    tips.push("Try solving advanced problems for better understanding");
-  } else {
-    tips.push("Excellent! Maintain your consistency");
-    tips.push("Help peers to reinforce your own understanding");
-    tips.push("Explore advanced topics and competitive prep");
-  }
+  const deptName = (student as any).departments?.name ?? "";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 max-w-4xl">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-white">
-        <h1 className="text-3xl font-bold">Welcome, {student.user.name}!</h1>
-        <p className="mt-2 text-blue-100">
-          {student.department} | Batch {student.batch} | Roll No: {student.rollNo}
+      <div>
+        <h1 className="text-xl font-semibold text-slate-900">
+          Welcome back, {user.fullName.split(" ")[0]}
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          {deptName} &middot; Semester {student.semester} &middot; Roll No: {student.roll_no}
         </p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <span className={`px-3 py-1 rounded-full text-sm font-medium bg-white/20`}>
-            {classification.label}
-          </span>
-          <span className={`px-3 py-1 rounded-full text-sm font-medium bg-white/20`}>
-            {trend.icon} {trend.label}
-          </span>
-          {risk.level !== "Safe" && (
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-red-500/30">
-              ⚠ {risk.level}
-            </span>
-          )}
-        </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          title="Average Score"
-          value={`${Math.round(analytics.avgPercent)}%`}
-          icon={Target}
-          color={classification.color}
-        />
-        <StatCard
-          title="Class Rank"
-          value={rank ? `#${rank}` : "N/A"}
-          subtitle={`out of ${totalStudents} students`}
-          icon={Trophy}
-          color="text-yellow-600"
-        />
-        <StatCard
-          title="Exams Taken"
-          value={student.marks.length}
-          icon={BookOpen}
-          color="text-purple-600"
-        />
-        <StatCard
-          title="Total Marks"
-          value={`${analytics.totalMarks}/${analytics.totalMaxMarks}`}
-          icon={Award}
-          color="text-blue-600"
-        />
-      </div>
+      {/* Summary cards */}
+      <div className="grid sm:grid-cols-3 gap-4">
+        {/* Overall Average */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription className="text-xs uppercase tracking-wider">
+              Overall Average
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-semibold text-slate-900">
+                {percentages.length > 0 ? fmtPct(avg) : "—"}
+              </span>
+              <Badge variant="secondary" className={`${category.bgColor} ${category.color} border-0 text-xs`}>
+                {category.label}
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Progress Chart */}
-      <ProgressLineChart data={chartData} title="Performance Trend Across Exams" />
+        {/* Trend */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription className="text-xs uppercase tracking-wider">
+              Performance Trend
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2">
+              <TrendIcon className={`h-5 w-5 ${trend.color}`} />
+              <span className={`text-lg font-medium ${trend.color}`}>
+                {trend.label}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Recent Results & Tips side by side */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Recent Exams */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200">
-            <h3 className="text-lg font-semibold">Recent Exam Results</h3>
-          </div>
-          <div className="divide-y divide-slate-200">
-            {student.marks.slice(-5).reverse().map((m) => {
-              const pct = Math.round((m.marksObtained / m.exam.maxMarks) * 100);
-              return (
-                <div key={m.id} className="px-6 py-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-slate-900">{m.exam.name}</p>
-                    <p className="text-sm text-slate-500">{m.exam.subject} | {m.exam.type.replace("_", " ")}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-lg">{m.marksObtained}/{m.exam.maxMarks}</p>
-                    <p className={`text-sm font-medium ${pct >= 75 ? "text-green-600" : pct >= 50 ? "text-yellow-600" : "text-red-600"}`}>
-                      {pct}%
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-            {student.marks.length === 0 && (
-              <div className="px-6 py-12 text-center text-slate-400">
-                No exam results yet.
+        {/* Exams Taken / Feedback */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription className="text-xs uppercase tracking-wider">
+              Activity
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-1">
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-slate-500" />
+              <span className="text-sm">
+                <span className="font-medium">{allMarks.length}</span> exams taken
+              </span>
+            </div>
+            {(unreadFeedback ?? 0) > 0 && (
+              <div className="flex items-center gap-2">
+                <Target className="h-4 w-4 text-blue-500" />
+                <span className="text-sm">
+                  <span className="font-medium">{unreadFeedback}</span> new feedback
+                </span>
               </div>
             )}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
+      </div>
 
-        {/* Improvement Tips */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-          <h3 className="text-lg font-semibold mb-4">💡 Improvement Suggestions</h3>
-          <div className="space-y-3">
-            {tips.map((tip, i) => (
-              <div key={i} className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
-                <span className="mt-0.5 text-blue-600 font-bold">{i + 1}.</span>
-                <p className="text-slate-700">{tip}</p>
+      {/* Risk alert - only show if not safe */}
+      {risk.level !== "Safe" && (
+        <Card className="border-amber-200 bg-amber-50/50">
+          <CardContent className="py-4">
+            <div className="flex items-center gap-3">
+              <div className={`h-2 w-2 rounded-full ${
+                risk.level === "High Risk" ? "bg-red-500" :
+                risk.level === "At Risk" ? "bg-orange-500" : "bg-amber-500"
+              }`} />
+              <p className="text-sm text-slate-700">
+                {risk.level === "High Risk"
+                  ? "Your scores need urgent attention. Consider reaching out to your teacher."
+                  : risk.level === "At Risk"
+                  ? "Your performance is below expectations. Focus on weaker subjects."
+                  : "You're close to the threshold. A bit more effort will help."
+                }
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Recent Results */}
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base">Recent Results</CardTitle>
+              <Link
+                href="/student/results"
+                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+              >
+                View all <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {recentResults.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">
+                No results yet.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {recentResults.map((m, i) => {
+                  const exam = m.exams as any;
+                  const pct = exam ? (m.marks_obtained / exam.max_marks) * 100 : 0;
+                  return (
+                    <div key={i}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-slate-900">
+                            {exam?.subjects?.code ?? "—"}: {exam?.name ?? "Exam"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {exam?.exam_date ? formatDate(exam.exam_date) : ""}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium">
+                            {m.marks_obtained}/{exam?.max_marks ?? 0}
+                          </p>
+                          <p
+                            className={`text-xs ${
+                              pct >= 75
+                                ? "text-emerald-600"
+                                : pct >= 50
+                                ? "text-amber-600"
+                                : "text-red-600"
+                            }`}
+                          >
+                            {fmtPct(pct)}
+                          </p>
+                        </div>
+                      </div>
+                      {i < recentResults.length - 1 && <Separator className="mt-3" />}
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
+            )}
+          </CardContent>
+        </Card>
 
-          {/* Classification badge */}
-          <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-slate-50 to-slate-100 border border-slate-200">
-            <p className="text-sm text-slate-500 mb-1">Your Classification</p>
-            <p className={`text-2xl font-bold ${classification.color}`}>
-              {classification.label}
-            </p>
-            <p className="text-sm text-slate-500 mt-1">
-              Based on {student.marks.length} exam(s) with an average of {Math.round(analytics.avgPercent)}%
-            </p>
-          </div>
-        </div>
+        {/* Subject Performance */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Subject Performance</CardTitle>
+            <CardDescription>Average across all exams</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {subjectAverages.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">
+                No data yet.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {subjectAverages.map((s) => (
+                  <div key={s.code} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="font-medium text-slate-700">{s.code}</span>
+                      <span className="text-muted-foreground">
+                        {fmtPct(s.avg)} ({s.exams} exam{s.exams !== 1 ? "s" : ""})
+                      </span>
+                    </div>
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all ${
+                          s.avg >= 75
+                            ? "bg-emerald-500"
+                            : s.avg >= 50
+                            ? "bg-amber-500"
+                            : "bg-red-500"
+                        }`}
+                        style={{ width: `${Math.min(s.avg, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

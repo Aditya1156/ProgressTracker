@@ -1,59 +1,57 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  return twMerge(clsx(inputs))
 }
 
-// ─── LEARNER CLASSIFICATION ─────────────────────────────
+// ─── Academic Analytics ───────────────────────────────────────────────────
+
+export type LearnerCategory = "Fast Learner" | "Average Learner" | "Slow Learner";
+export type TrendDirection = "Improving" | "Declining" | "Stable";
+export type RiskLevel = "Safe" | "Watch" | "At Risk" | "High Risk";
+
 export function classifyLearner(avgPercent: number): {
-  label: string;
+  label: LearnerCategory;
   color: string;
   bgColor: string;
 } {
-  if (avgPercent >= 75) return { label: "Fast Learner", color: "text-green-700", bgColor: "bg-green-100" };
-  if (avgPercent >= 50) return { label: "Average Learner", color: "text-yellow-700", bgColor: "bg-yellow-100" };
-  return { label: "Slow Learner", color: "text-red-700", bgColor: "bg-red-100" };
+  if (avgPercent >= 75) return { label: "Fast Learner", color: "text-emerald-700", bgColor: "bg-emerald-50" };
+  if (avgPercent >= 50) return { label: "Average Learner", color: "text-amber-700", bgColor: "bg-amber-50" };
+  return { label: "Slow Learner", color: "text-red-700", bgColor: "bg-red-50" };
 }
 
-// ─── PROGRESS TREND DETECTION ───────────────────────────
 export function detectTrend(recentScores: number[]): {
-  label: string;
+  label: TrendDirection;
   color: string;
   icon: string;
 } {
-  if (recentScores.length < 2) return { label: "Insufficient Data", color: "text-gray-500", icon: "−" };
-
-  const last = recentScores.slice(-3);
-  let improving = 0;
-  let declining = 0;
-
-  for (let i = 1; i < last.length; i++) {
-    if (last[i] > last[i - 1]) improving++;
-    else if (last[i] < last[i - 1]) declining++;
-  }
-
-  if (improving > declining) return { label: "Improving", color: "text-green-600", icon: "↑" };
-  if (declining > improving) return { label: "Declining", color: "text-red-600", icon: "↓" };
-  return { label: "Stable", color: "text-blue-600", icon: "→" };
+  if (recentScores.length < 3) return { label: "Stable", color: "text-slate-600", icon: "→" };
+  const last3 = recentScores.slice(-3);
+  const isImproving = last3[2] > last3[0] && last3[1] >= last3[0];
+  const isDeclining = last3[2] < last3[0] && last3[1] <= last3[0];
+  if (isImproving) return { label: "Improving", color: "text-emerald-600", icon: "↑" };
+  if (isDeclining) return { label: "Declining", color: "text-red-600", icon: "↓" };
+  return { label: "Stable", color: "text-slate-600", icon: "→" };
 }
 
-// ─── RISK PREDICTION ────────────────────────────────────
-export function predictRisk(avgPercent: number, trend: string): {
-  level: string;
+export function predictRisk(avgPercent: number, trend: TrendDirection): {
+  level: RiskLevel;
   color: string;
 } {
   if (avgPercent < 35 && trend === "Declining") return { level: "High Risk", color: "text-red-700" };
-  if (avgPercent < 50) return { level: "At Risk", color: "text-orange-600" };
-  if (avgPercent < 60 && trend === "Declining") return { level: "Watch", color: "text-yellow-600" };
-  return { level: "Safe", color: "text-green-600" };
+  if (avgPercent < 45 || (avgPercent < 55 && trend === "Declining")) return { level: "At Risk", color: "text-orange-600" };
+  if (avgPercent < 55 && trend !== "Improving") return { level: "Watch", color: "text-amber-600" };
+  return { level: "Safe", color: "text-emerald-600" };
 }
 
-// ─── FORMAT DATE ────────────────────────────────────────
-export function formatDate(date: Date | string): string {
+export function formatDate(date: string | Date): string {
   return new Date(date).toLocaleDateString("en-IN", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+    day: "numeric", month: "short", year: "numeric",
   });
+}
+
+/** Format percentage with one decimal place */
+export function fmtPct(value: number): string {
+  return `${value.toFixed(1)}%`;
 }

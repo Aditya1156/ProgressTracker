@@ -1,80 +1,87 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { GraduationCap, BarChart3, Users, Shield } from "lucide-react";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="container mx-auto px-6 py-6 flex items-center justify-between">
-        <div className="flex items-center gap-3 text-white">
-          <GraduationCap size={32} className="text-blue-400" />
-          <span className="text-xl font-bold">ProgressTracker</span>
+      <header className="border-b border-slate-200">
+        <div className="mx-auto max-w-5xl flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-2">
+            <GraduationCap className="h-6 w-6 text-slate-800" />
+            <span className="text-lg font-semibold tracking-tight text-slate-900">
+              AcadTrack
+            </span>
+          </div>
+          <Button asChild variant="outline" size="sm">
+            <Link href="/login">Sign in</Link>
+          </Button>
         </div>
-        <Link
-          href="/login"
-          className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-        >
-          Sign In
-        </Link>
       </header>
 
       {/* Hero */}
-      <main className="container mx-auto px-6 py-20 text-center">
-        <h1 className="text-5xl md:text-6xl font-extrabold text-white leading-tight">
-          College Exam &<br />
-          <span className="text-blue-400">Progress Tracker</span>
-        </h1>
-        <p className="mt-6 text-xl text-slate-300 max-w-2xl mx-auto">
-          A unified platform for teachers to track student performance, identify learning patterns,
-          and help every student achieve their potential.
-        </p>
-        <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href="/login"
-            className="px-8 py-3.5 bg-blue-600 text-white rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
-          >
-            Get Started →
-          </Link>
-        </div>
-
-        {/* Feature cards */}
-        <div className="mt-24 grid md:grid-cols-3 gap-8 text-left">
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/10">
-            <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
-              <Users className="text-blue-400" size={24} />
-            </div>
-            <h3 className="text-xl font-bold text-white">Student Management</h3>
-            <p className="mt-2 text-slate-300">
-              Add, edit, and manage student records. Search by department, batch, or roll number.
-            </p>
+      <main className="mx-auto max-w-5xl px-6">
+        <section className="py-20 space-y-6 text-center">
+          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900 max-w-2xl mx-auto leading-tight">
+            Academic Intelligence for your College
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            Track exams, monitor student progress, identify at-risk learners,
+            and empower teachers with data-driven insights &mdash; all in one
+            calm, clean platform.
+          </p>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <Button asChild size="lg">
+              <Link href="/login">Get Started</Link>
+            </Button>
           </div>
+        </section>
 
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/10">
-            <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
-              <BarChart3 className="text-green-400" size={24} />
-            </div>
-            <h3 className="text-xl font-bold text-white">Smart Analytics</h3>
-            <p className="mt-2 text-slate-300">
-              Auto-classify learners, detect performance trends, and predict at-risk students.
-            </p>
-          </div>
-
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/10">
-            <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
-              <Shield className="text-purple-400" size={24} />
-            </div>
-            <h3 className="text-xl font-bold text-white">Role-Based Access</h3>
-            <p className="mt-2 text-slate-300">
-              Separate dashboards for admins and students with secure authentication.
-            </p>
-          </div>
-        </div>
+        {/* Features */}
+        <section className="grid sm:grid-cols-3 gap-8 pb-20">
+          <FeatureCard
+            icon={<BarChart3 className="h-5 w-5" />}
+            title="Progress Tracking"
+            desc="Trends, risk prediction, and learner classification — updated in real time as marks are entered."
+          />
+          <FeatureCard
+            icon={<Users className="h-5 w-5" />}
+            title="Role-Based Views"
+            desc="Students see motivation. Teachers see class performance. HODs see department analytics."
+          />
+          <FeatureCard
+            icon={<Shield className="h-5 w-5" />}
+            title="Secure by Default"
+            desc="Row-level security ensures every query only returns data the user is authorized to see."
+          />
+        </section>
       </main>
 
       {/* Footer */}
-      <footer className="container mx-auto px-6 py-8 text-center text-slate-400 border-t border-slate-700/50">
-        <p>© 2026 ProgressTracker. Built with Next.js, Prisma & TypeScript.</p>
+      <footer className="border-t border-slate-200 py-6 text-center text-xs text-muted-foreground">
+        Internal academic platform &middot; Authorized personnel only
       </footer>
+    </div>
+  );
+}
+
+function FeatureCard({
+  icon,
+  title,
+  desc,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <div className="rounded-lg border border-slate-200 p-6 space-y-3">
+      <div className="flex items-center gap-2 text-slate-800">
+        {icon}
+        <h3 className="font-medium">{title}</h3>
+      </div>
+      <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
     </div>
   );
 }

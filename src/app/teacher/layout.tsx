@@ -1,7 +1,7 @@
 import { getUser } from "@/lib/auth";
 import AppShell from "@/components/AppShell";
 
-export default async function StudentLayout({
+export default async function TeacherLayout({
   children,
 }: {
   children: React.ReactNode;
