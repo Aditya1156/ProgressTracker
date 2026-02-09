@@ -1,26 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { UserPlus, Search, Download } from "lucide-react";
-import { classifyLearner, fmtPct } from "@/lib/utils";
-import Link from "next/link";
+import { UserPlus } from "lucide-react";
+import StudentsClient from "./StudentsClient";
 
 export default async function AdminStudentsPage() {
   const user = await getUser();
@@ -71,176 +54,14 @@ export default async function AdminStudentsPage() {
             Manage student records and view performance
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
-          <Button size="sm">
-            <UserPlus className="h-4 w-4 mr-2" />
-            Add Student
-          </Button>
-        </div>
+        <Button size="sm" disabled>
+          <UserPlus className="h-4 w-4 mr-2" />
+          Add Student
+        </Button>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid sm:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              Total Students
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <span className="text-2xl font-semibold text-slate-900">
-              {sortedStudents.length}
-            </span>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              With Results
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <span className="text-2xl font-semibold text-slate-900">
-              {sortedStudents.filter((s) => s.examCount > 0).length}
-            </span>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              Excellent (&gt;75%)
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <span className="text-2xl font-semibold text-emerald-600">
-              {sortedStudents.filter((s) => s.avg >= 75).length}
-            </span>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              At Risk (&lt;40%)
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <span className="text-2xl font-semibold text-red-600">
-              {sortedStudents.filter((s) => s.avg >= 0 && s.avg < 40).length}
-            </span>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Search and Filter */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base">All Students</CardTitle>
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search students..."
-                  className="pl-8 w-64"
-                  disabled
-                />
-              </div>
-            </div>
-          </div>
-          <CardDescription>
-            Complete list of all registered students
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Roll No</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Department</TableHead>
-                  <TableHead className="text-center">Semester</TableHead>
-                  <TableHead className="text-center">Batch</TableHead>
-                  <TableHead className="text-right">Exams</TableHead>
-                  <TableHead className="text-right">Average</TableHead>
-                  <TableHead className="text-right">Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedStudents.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={9} className="text-center py-8">
-                      <p className="text-sm text-muted-foreground">
-                        No students found
-                      </p>
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  sortedStudents.map((s) => {
-                    const profile = s.profiles as any;
-                    const dept = s.departments as any;
-                    const cat = s.avg >= 0 ? classifyLearner(s.avg) : null;
-                    return (
-                      <TableRow key={s.id}>
-                        <TableCell className="font-mono text-sm font-medium">
-                          {s.roll_no}
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          <Link
-                            href={`/admin/students/${s.id}`}
-                            className="hover:underline"
-                          >
-                            {profile?.full_name ?? "—"}
-                          </Link>
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {profile?.email ?? "—"}
-                        </TableCell>
-                        <TableCell className="text-sm">
-                          {dept?.name ?? "—"}
-                        </TableCell>
-                        <TableCell className="text-center text-sm">
-                          {s.semester}
-                        </TableCell>
-                        <TableCell className="text-center text-sm">
-                          {s.batch}
-                        </TableCell>
-                        <TableCell className="text-right text-sm">
-                          {s.examCount}
-                        </TableCell>
-                        <TableCell
-                          className={`text-right font-medium ${cat?.color ?? ""}`}
-                        >
-                          {s.avg >= 0 ? fmtPct(s.avg) : "—"}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {cat ? (
-                            <Badge
-                              variant="secondary"
-                              className={`text-xs border-0 ${cat.bgColor} ${cat.color}`}
-                            >
-                              {cat.label}
-                            </Badge>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">
-                              No data
-                            </span>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Client Component with Search and Export */}
+      <StudentsClient students={sortedStudents} />
 
       {/* Note */}
       <Card className="bg-blue-50 border-blue-200">
