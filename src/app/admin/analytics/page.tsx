@@ -10,6 +10,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, TrendingDown, Users, Award } from "lucide-react";
 import { fmtPct } from "@/lib/utils";
+import { PerformanceDistributionChart } from "./PerformanceDistributionChart";
+import { DepartmentsChart } from "./DepartmentsChart";
+import { SemestersChart } from "./SemestersChart";
+import { ExamTypesChart } from "./ExamTypesChart";
 
 export default async function AdminAnalyticsPage() {
   const user = await getUser();
@@ -191,236 +195,28 @@ export default async function AdminAnalyticsPage() {
 
         {/* Performance Distribution */}
         <TabsContent value="performance" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">
-                Performance Category Distribution
-              </CardTitle>
-              <CardDescription>
-                Student performance across all exams
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-emerald-700">
-                      Excellent (75%+)
-                    </span>
-                    <span className="text-slate-600">
-                      {excellentCount} ({percentages.length > 0 ? fmtPct((excellentCount / percentages.length) * 100) : "0%"})
-                    </span>
-                  </div>
-                  <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-emerald-500 rounded-full"
-                      style={{
-                        width: `${percentages.length > 0 ? (excellentCount / percentages.length) * 100 : 0}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-blue-700">Good (60-74%)</span>
-                    <span className="text-slate-600">
-                      {goodCount} ({percentages.length > 0 ? fmtPct((goodCount / percentages.length) * 100) : "0%"})
-                    </span>
-                  </div>
-                  <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-blue-500 rounded-full"
-                      style={{
-                        width: `${percentages.length > 0 ? (goodCount / percentages.length) * 100 : 0}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-amber-700">
-                      Average (40-59%)
-                    </span>
-                    <span className="text-slate-600">
-                      {averageCount} ({percentages.length > 0 ? fmtPct((averageCount / percentages.length) * 100) : "0%"})
-                    </span>
-                  </div>
-                  <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-amber-500 rounded-full"
-                      style={{
-                        width: `${percentages.length > 0 ? (averageCount / percentages.length) * 100 : 0}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-red-700">
-                      Needs Improvement (&lt;40%)
-                    </span>
-                    <span className="text-slate-600">
-                      {poorCount} ({percentages.length > 0 ? fmtPct((poorCount / percentages.length) * 100) : "0%"})
-                    </span>
-                  </div>
-                  <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-red-500 rounded-full"
-                      style={{
-                        width: `${percentages.length > 0 ? (poorCount / percentages.length) * 100 : 0}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <PerformanceDistributionChart
+            excellentCount={excellentCount}
+            goodCount={goodCount}
+            averageCount={averageCount}
+            poorCount={poorCount}
+            totalCount={percentages.length}
+          />
         </TabsContent>
 
         {/* Departments */}
         <TabsContent value="departments" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Department Performance</CardTitle>
-              <CardDescription>
-                Average performance by department
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {deptPerformance
-                  .sort((a, b) => b.avg - a.avg)
-                  .map((dept) => (
-                    <div key={dept.id} className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <div>
-                          <span className="font-medium text-slate-900">
-                            {dept.full_name}
-                          </span>
-                          <span className="text-muted-foreground ml-2">
-                            ({dept.count} results)
-                          </span>
-                        </div>
-                        <span
-                          className={`font-medium ${
-                            dept.avg >= 60
-                              ? "text-emerald-600"
-                              : dept.avg >= 45
-                              ? "text-amber-600"
-                              : "text-red-600"
-                          }`}
-                        >
-                          {dept.count > 0 ? fmtPct(dept.avg) : "No data"}
-                        </span>
-                      </div>
-                      {dept.count > 0 && (
-                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${
-                              dept.avg >= 60
-                                ? "bg-emerald-500"
-                                : dept.avg >= 45
-                                ? "bg-amber-500"
-                                : "bg-red-500"
-                            }`}
-                            style={{ width: `${Math.min(dept.avg, 100)}%` }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-              </div>
-            </CardContent>
-          </Card>
+          <DepartmentsChart deptPerformance={deptPerformance} />
         </TabsContent>
 
         {/* Semesters */}
         <TabsContent value="semesters" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Semester-wise Analysis</CardTitle>
-              <CardDescription>Performance across semesters</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {semesterStats.map((sem) => (
-                  <div key={sem.semester} className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <div>
-                        <span className="font-medium text-slate-900">
-                          Semester {sem.semester}
-                        </span>
-                        <span className="text-muted-foreground ml-2">
-                          ({sem.studentCount} students)
-                        </span>
-                      </div>
-                      <span
-                        className={`font-medium ${
-                          sem.avg >= 60
-                            ? "text-emerald-600"
-                            : sem.avg >= 45
-                            ? "text-amber-600"
-                            : "text-red-600"
-                        }`}
-                      >
-                        {fmtPct(sem.avg)}
-                      </span>
-                    </div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${
-                          sem.avg >= 60
-                            ? "bg-emerald-500"
-                            : sem.avg >= 45
-                            ? "bg-amber-500"
-                            : "bg-red-500"
-                        }`}
-                        style={{ width: `${Math.min(sem.avg, 100)}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <SemestersChart semesterStats={semesterStats} />
         </TabsContent>
 
         {/* Exam Types */}
         <TabsContent value="exams" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Exam Type Distribution</CardTitle>
-              <CardDescription>Number of exams by type</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {examTypeStats
-                  .filter((t) => t.count > 0)
-                  .sort((a, b) => b.count - a.count)
-                  .map((type) => (
-                    <div key={type.type} className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="font-medium text-slate-900">
-                          {type.label}
-                        </span>
-                        <span className="text-slate-600">{type.count} exams</span>
-                      </div>
-                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-blue-500 rounded-full"
-                          style={{
-                            width: `${(type.count / totalExams) * 100}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </CardContent>
-          </Card>
+          <ExamTypesChart examTypeStats={examTypeStats} totalExams={totalExams} />
         </TabsContent>
       </Tabs>
     </div>

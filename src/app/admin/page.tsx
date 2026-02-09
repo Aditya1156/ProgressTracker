@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { classifyLearner, fmtPct } from "@/lib/utils";
+import { DepartmentPerformanceChart } from "./DepartmentPerformanceChart";
 
 export default async function AdminDashboard() {
   const user = await getUser();
@@ -165,66 +166,10 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Department Comparison */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Department Performance</CardTitle>
-            <CardDescription>Average scores by department</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {deptStats.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">
-                No departments configured.
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {deptStats
-                  .sort((a, b) => b.avg - a.avg)
-                  .map((d) => (
-                    <div key={d.id} className="space-y-1.5">
-                      <div className="flex items-center justify-between text-sm">
-                        <div>
-                          <span className="font-medium text-slate-900">
-                            {d.name}
-                          </span>
-                          <span className="text-muted-foreground ml-2">
-                            ({d.studentCount} students)
-                          </span>
-                        </div>
-                        <span
-                          className={`font-medium ${
-                            d.avg >= 0
-                              ? d.avg >= 60
-                                ? "text-emerald-600"
-                                : d.avg >= 45
-                                ? "text-amber-600"
-                                : "text-red-600"
-                              : "text-muted-foreground"
-                          }`}
-                        >
-                          {d.avg >= 0 ? fmtPct(d.avg) : "No data"}
-                        </span>
-                      </div>
-                      {d.avg >= 0 && (
-                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${
-                              d.avg >= 60
-                                ? "bg-emerald-500"
-                                : d.avg >= 45
-                                ? "bg-amber-500"
-                                : "bg-red-500"
-                            }`}
-                            style={{ width: `${Math.min(d.avg, 100)}%` }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {/* Department Performance */}
+        <div className="animate-fade-in animate-delay-400">
+          <DepartmentPerformanceChart deptStats={deptStats} />
+        </div>
 
         {/* At-Risk Students */}
         <Card>

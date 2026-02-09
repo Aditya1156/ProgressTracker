@@ -1,161 +1,135 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useMemo } from "react";
+import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Download, Mail } from "lucide-react";
+import { Download, Mail } from "lucide-react";
 import { downloadCSV, formatTeacherDataForExport } from "@/lib/export";
-import Link from "next/link";
+import { DataTable, SortableHeader } from "@/components/ui/data-table";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+interface Teacher {
+  id: string;
+  designation: string;
+  created_at: string;
+  examsCount: number;
+  feedbackCount: number;
+  profiles: any;
+  departments: any;
+}
+
 interface TeachersClientProps {
-  teachers: any[];
+  teachers: Teacher[];
 }
 
 export default function TeachersClient({ teachers }: TeachersClientProps) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
-  // Filter teachers based on search query
-  const filteredTeachers = useMemo(() => {
-    if (!searchQuery.trim()) return teachers;
-
-    const query = searchQuery.toLowerCase();
-    return teachers.filter((t) => {
-      const profile = t.profiles as any;
-      const dept = t.departments as any;
-
-      return (
-        profile?.full_name?.toLowerCase().includes(query) ||
-        profile?.email?.toLowerCase().includes(query) ||
-        dept?.name?.toLowerCase().includes(query) ||
-        dept?.full_name?.toLowerCase().includes(query) ||
-        t.designation.toLowerCase().includes(query)
-      );
-    });
-  }, [teachers, searchQuery]);
+  // Define table columns
+  const columns: ColumnDef<Teacher>[] = useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: ({ column }) => <SortableHeader column={column}>Name</SortableHeader>,
+        accessorFn: (row) => (row.profiles as any)?.full_name ?? "—",
+        cell: ({ row }) => (
+          <span className="font-medium">
+            {(row.original.profiles as any)?.full_name ?? "—"}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "email",
+        header: ({ column }) => <SortableHeader column={column}>Email</SortableHeader>,
+        accessorFn: (row) => (row.profiles as any)?.email ?? "—",
+        cell: ({ row }) => {
+          const email = (row.original.profiles as any)?.email ?? "—";
+          return (
+            <div className="flex items-center gap-2">
+              <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">{email}</span>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "department",
+        header: ({ column }) => <SortableHeader column={column}>Department</SortableHeader>,
+        accessorFn: (row) => (row.departments as any)?.full_name ?? "—",
+        cell: ({ row }) => {
+          const dept = row.original.departments as any;
+          return (
+            <div className="flex flex-col">
+              <span className="text-sm">{dept?.full_name ?? "—"}</span>
+              <span className="text-xs text-muted-foreground">
+                {dept?.name ?? ""}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "designation",
+        header: ({ column }) => <SortableHeader column={column}>Designation</SortableHeader>,
+        cell: ({ row }) => (
+          <Badge variant="secondary" className="text-xs badge-transition">
+            {row.original.designation}
+          </Badge>
+        ),
+      },
+      {
+        accessorKey: "examsCount",
+        header: ({ column }) => <SortableHeader column={column}>Exams Created</SortableHeader>,
+        cell: ({ row }) => (
+          <span className="text-right block text-sm font-medium">
+            {row.original.examsCount ?? 0}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "feedbackCount",
+        header: ({ column }) => <SortableHeader column={column}>Feedback Sent</SortableHeader>,
+        cell: ({ row }) => (
+          <span className="text-right block text-sm font-medium">
+            {row.original.feedbackCount ?? 0}
+          </span>
+        ),
+      },
+    ],
+    []
+  );
 
   const handleExport = () => {
-    if (filteredTeachers.length === 0) {
+    if (teachers.length === 0) {
       toast.error("No data to export");
       return;
     }
 
-    const exportData = formatTeacherDataForExport(filteredTeachers);
+    const exportData = formatTeacherDataForExport(teachers);
     const timestamp = new Date().toISOString().split("T")[0];
     downloadCSV(exportData, `teachers-${timestamp}.csv`);
-    toast.success(`Exported ${filteredTeachers.length} teacher(s)`);
+    toast.success(`Exported ${teachers.length} teacher(s)`);
   };
 
   return (
-    <>
-      {/* Search and Export */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search by name, email, department, designation..."
-            className="pl-8"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <Button onClick={handleExport} variant="outline" size="sm">
+    <div className="space-y-6">
+      {/* Export Button */}
+      <div className="flex justify-end">
+        <Button onClick={handleExport} variant="outline" size="sm" className="btn-ripple">
           <Download className="h-4 w-4 mr-2" />
           Export CSV
         </Button>
       </div>
 
-      {/* Search results info */}
-      {searchQuery && (
-        <div className="text-sm text-muted-foreground">
-          Found {filteredTeachers.length} teacher(s) matching "{searchQuery}"
-        </div>
-      )}
-
-      {/* Table */}
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Designation</TableHead>
-              <TableHead className="text-right">Exams Created</TableHead>
-              <TableHead className="text-right">Feedback Sent</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredTeachers.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-8">
-                  <p className="text-sm text-muted-foreground">
-                    {searchQuery
-                      ? "No teachers found matching your search"
-                      : "No teachers found"}
-                  </p>
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredTeachers.map((teacher) => {
-                const profile = teacher.profiles as any;
-                const dept = teacher.departments as any;
-                const examsCount = teacher.examsCount ?? 0;
-                const feedbackCount = teacher.feedbackCount ?? 0;
-
-                return (
-                  <TableRow key={teacher.id}>
-                    <TableCell className="font-medium">
-                      <Link
-                        href={`/admin/teachers/${teacher.id}`}
-                        className="hover:underline"
-                      >
-                        {profile?.full_name ?? "—"}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">
-                          {profile?.email ?? "—"}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-col">
-                        <span className="text-sm">{dept?.full_name ?? "—"}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {dept?.name ?? ""}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary" className="text-xs">
-                        {teacher.designation}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <span className="text-sm font-medium">{examsCount}</span>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <span className="text-sm font-medium">{feedbackCount}</span>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
-      </div>
-    </>
+      {/* Data Table */}
+      <DataTable
+        columns={columns}
+        data={teachers}
+        searchPlaceholder="Search by name, email, department, designation..."
+        onRowClick={(row) => router.push(`/admin/teachers/${row.id}`)}
+      />
+    </div>
   );
 }

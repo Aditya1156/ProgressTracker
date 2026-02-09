@@ -1,24 +1,27 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useMemo } from "react";
+import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { downloadCSV, formatExamDataForExport } from "@/lib/export";
+import { DataTable, SortableHeader } from "@/components/ui/data-table";
 import { toast } from "sonner";
 
+interface Exam {
+  id: string;
+  name: string;
+  type: string;
+  max_marks: number;
+  exam_date: string;
+  marksCount?: number;
+  subjects: any;
+}
+
 interface ExamsClientProps {
-  exams: any[];
+  exams: Exam[];
 }
 
 const typeColors: Record<string, string> = {
@@ -38,144 +41,131 @@ const typeLabels: Record<string, string> = {
 };
 
 export default function ExamsClient({ exams }: ExamsClientProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // Filter exams based on search query
-  const filteredExams = useMemo(() => {
-    if (!searchQuery.trim()) return exams;
-
-    const query = searchQuery.toLowerCase();
-    return exams.filter((e) => {
-      const subject = e.subjects as any;
-      const dept = subject?.departments as any;
-
-      return (
-        e.name.toLowerCase().includes(query) ||
-        subject?.name?.toLowerCase().includes(query) ||
-        subject?.code?.toLowerCase().includes(query) ||
-        dept?.name?.toLowerCase().includes(query) ||
-        e.type.toLowerCase().includes(query) ||
-        e.exam_date.includes(query) ||
-        subject?.semester?.toString().includes(query)
-      );
-    });
-  }, [exams, searchQuery]);
+  // Define table columns
+  const columns: ColumnDef<Exam>[] = useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: ({ column }) => <SortableHeader column={column}>Exam Name</SortableHeader>,
+        cell: ({ row }) => (
+          <span className="font-medium">{row.original.name}</span>
+        ),
+      },
+      {
+        accessorKey: "subject",
+        header: ({ column }) => <SortableHeader column={column}>Subject</SortableHeader>,
+        accessorFn: (row) => (row.subjects as any)?.name ?? "—",
+        cell: ({ row }) => {
+          const subject = row.original.subjects as any;
+          return (
+            <div className="flex flex-col">
+              <span className="text-sm">{subject?.name ?? "—"}</span>
+              <span className="text-xs text-muted-foreground">
+                {subject?.code ?? ""}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "department",
+        header: ({ column }) => <SortableHeader column={column}>Department</SortableHeader>,
+        accessorFn: (row) => (row.subjects as any)?.departments?.name ?? "—",
+        cell: ({ row }) => {
+          const dept = (row.original.subjects as any)?.departments as any;
+          return <span className="text-sm">{dept?.name ?? "—"}</span>;
+        },
+      },
+      {
+        accessorKey: "type",
+        header: ({ column }) => <SortableHeader column={column}>Type</SortableHeader>,
+        cell: ({ row }) => (
+          <Badge
+            variant="outline"
+            className={`text-xs badge-transition ${typeColors[row.original.type] ?? ""}`}
+          >
+            {typeLabels[row.original.type] ?? row.original.type}
+          </Badge>
+        ),
+      },
+      {
+        accessorKey: "max_marks",
+        header: ({ column }) => <SortableHeader column={column}>Max Marks</SortableHeader>,
+        cell: ({ row }) => (
+          <span className="text-right block font-medium">
+            {row.original.max_marks}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "semester",
+        header: ({ column }) => <SortableHeader column={column}>Semester</SortableHeader>,
+        accessorFn: (row) => (row.subjects as any)?.semester ?? 0,
+        cell: ({ row }) => {
+          const subject = row.original.subjects as any;
+          return (
+            <span className="text-sm">
+              Sem {subject?.semester ?? "—"}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: "exam_date",
+        header: ({ column }) => <SortableHeader column={column}>Date</SortableHeader>,
+        cell: ({ row }) => (
+          <span className="text-sm">
+            {formatDate(row.original.exam_date)}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "marksCount",
+        header: ({ column }) => <SortableHeader column={column}>Entries</SortableHeader>,
+        cell: ({ row }) => (
+          <span
+            className={`text-right block text-sm font-medium ${
+              (row.original.marksCount ?? 0) > 0
+                ? "text-emerald-600"
+                : "text-muted-foreground"
+            }`}
+          >
+            {row.original.marksCount ?? 0}
+          </span>
+        ),
+      },
+    ],
+    []
+  );
 
   const handleExport = () => {
-    if (filteredExams.length === 0) {
+    if (exams.length === 0) {
       toast.error("No data to export");
       return;
     }
 
-    const exportData = formatExamDataForExport(filteredExams);
+    const exportData = formatExamDataForExport(exams);
     const timestamp = new Date().toISOString().split("T")[0];
     downloadCSV(exportData, `exams-${timestamp}.csv`);
-    toast.success(`Exported ${filteredExams.length} exam(s)`);
+    toast.success(`Exported ${exams.length} exam(s)`);
   };
 
   return (
-    <>
-      {/* Search and Export */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search by exam name, subject, department, type..."
-            className="pl-8"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <Button onClick={handleExport} variant="outline" size="sm">
+    <div className="space-y-6">
+      {/* Export Button */}
+      <div className="flex justify-end">
+        <Button onClick={handleExport} variant="outline" size="sm" className="btn-ripple">
           <Download className="h-4 w-4 mr-2" />
           Export CSV
         </Button>
       </div>
 
-      {/* Search results info */}
-      {searchQuery && (
-        <div className="text-sm text-muted-foreground">
-          Found {filteredExams.length} exam(s) matching "{searchQuery}"
-        </div>
-      )}
-
-      {/* Table */}
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Exam Name</TableHead>
-              <TableHead>Subject</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead className="text-right">Max Marks</TableHead>
-              <TableHead>Semester</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead className="text-right">Entries</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredExams.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center py-8">
-                  <p className="text-sm text-muted-foreground">
-                    {searchQuery
-                      ? "No exams found matching your search"
-                      : "No exams scheduled yet"}
-                  </p>
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredExams.map((exam) => {
-                const subject = exam.subjects as any;
-                const dept = subject?.departments as any;
-                return (
-                  <TableRow key={exam.id}>
-                    <TableCell className="font-medium">{exam.name}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-col">
-                        <span className="text-sm">{subject?.name ?? "—"}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {subject?.code ?? ""}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-sm">{dept?.name ?? "—"}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={`text-xs ${typeColors[exam.type] ?? ""}`}
-                      >
-                        {typeLabels[exam.type] ?? exam.type}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right font-medium">
-                      {exam.max_marks}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      Sem {subject?.semester ?? "—"}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {formatDate(exam.exam_date)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <span
-                        className={`text-sm font-medium ${
-                          (exam.marksCount ?? 0) > 0
-                            ? "text-emerald-600"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        {exam.marksCount ?? 0}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
-      </div>
-    </>
+      {/* Data Table */}
+      <DataTable
+        columns={columns}
+        data={exams}
+        searchPlaceholder="Search by exam name, subject, department, type..."
+      />
+    </div>
   );
 }

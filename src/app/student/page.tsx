@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { classifyLearner, detectTrend, predictRisk, fmtPct, formatDate } from "@/lib/utils";
 import Link from "next/link";
+import { PerformanceTrendChart } from "./PerformanceTrendChart";
+import { SubjectPerformanceChart } from "./SubjectPerformanceChart";
 
 export default async function StudentDashboard() {
   const user = await getUser();
@@ -216,6 +218,13 @@ export default async function StudentDashboard() {
         </Card>
       )}
 
+      {/* Performance Trend Chart */}
+      {allMarks.length > 0 && (
+        <div className="animate-fade-in animate-delay-300">
+          <PerformanceTrendChart marks={allMarks} />
+        </div>
+      )}
+
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Recent Results */}
         <Card>
@@ -278,44 +287,9 @@ export default async function StudentDashboard() {
         </Card>
 
         {/* Subject Performance */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Subject Performance</CardTitle>
-            <CardDescription>Average across all exams</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {subjectAverages.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">
-                No data yet.
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {subjectAverages.map((s) => (
-                  <div key={s.code} className="space-y-1.5">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium text-slate-700">{s.code}</span>
-                      <span className="text-muted-foreground">
-                        {fmtPct(s.avg)} ({s.exams} exam{s.exams !== 1 ? "s" : ""})
-                      </span>
-                    </div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all ${
-                          s.avg >= 75
-                            ? "bg-emerald-500"
-                            : s.avg >= 50
-                            ? "bg-amber-500"
-                            : "bg-red-500"
-                        }`}
-                        style={{ width: `${Math.min(s.avg, 100)}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <div className="animate-fade-in animate-delay-400">
+          <SubjectPerformanceChart subjectAverages={subjectAverages} />
+        </div>
       </div>
     </div>
   );
