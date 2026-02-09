@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─── USER & AUTH ────────────────────────────────────────
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  passwordHash  String
+  role          String    @default("STUDENT") // ADMIN | STUDENT
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  student       Student?
+}
+
+// ─── STUDENT PROFILE ────────────────────────────────────
+model Student {
+  id          String   @id @default(cuid())
+  rollNo      String   @unique
+  department  String
+  batch       String
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  marks       Mark[]
+  createdAt   DateTime @default(now())
+}
+
+// ─── EXAM / TEST ────────────────────────────────────────
+model Exam {
+  id        String   @id @default(cuid())
+  name      String
+  type      String   // CLASS_TEST | MID | END
+  subject   String
+  maxMarks  Int
+  date      DateTime
+  marks     Mark[]
+  createdAt DateTime @default(now())
+}
+
+// ─── MARKS ──────────────────────────────────────────────
+model Mark {
+  id             String  @id @default(cuid())
+  marksObtained  Int
+  studentId      String
+  examId         String
+  student        Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  exam           Exam    @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, examId])
+}
