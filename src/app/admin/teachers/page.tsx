@@ -7,18 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { UserPlus, Mail } from "lucide-react";
-import Link from "next/link";
+import { UserPlus } from "lucide-react";
+import TeachersClient from "./TeachersClient";
 
 export default async function AdminTeachersPage() {
   const user = await getUser();
@@ -69,10 +61,33 @@ export default async function AdminTeachersPage() {
     );
   });
 
+  // Enrich teachers with counts
+  const teachersWithCounts = (teachers ?? []).map((teacher) => {
+    const profile = teacher.profiles as any;
+    const teacherProfileId = profile?.id;
+    const examsCount = teacherProfileId
+      ? examCountMap.get(teacherProfileId) ?? 0
+      : 0;
+    const feedbackCount = feedbackCountMap.get(teacher.id) ?? 0;
+
+    return {
+      ...teacher,
+      examsCount,
+      feedbackCount,
+    };
+  });
+
   // Group teachers by designation
   const designations = [
     ...new Set((teachers ?? []).map((t) => t.designation)),
   ];
+
+  // Calculate summary stats
+  const totalExams = Array.from(examCountMap.values()).reduce((a, b) => a + b, 0);
+  const totalFeedback = Array.from(feedbackCountMap.values()).reduce(
+    (a, b) => a + b,
+    0
+  );
 
   return (
     <div className="space-y-6 max-w-7xl">
@@ -111,7 +126,7 @@ export default async function AdminTeachersPage() {
           </CardHeader>
           <CardContent>
             <span className="text-2xl font-semibold text-slate-900">
-              {Array.from(examCountMap.values()).reduce((a, b) => a + b, 0)}
+              {totalExams}
             </span>
           </CardContent>
         </Card>
@@ -123,7 +138,7 @@ export default async function AdminTeachersPage() {
           </CardHeader>
           <CardContent>
             <span className="text-2xl font-semibold text-slate-900">
-              {Array.from(feedbackCountMap.values()).reduce((a, b) => a + b, 0)}
+              {totalFeedback}
             </span>
           </CardContent>
         </Card>
@@ -141,91 +156,14 @@ export default async function AdminTeachersPage() {
         </Card>
       </div>
 
-      {/* Teachers List */}
+      {/* Teachers List with Search & Export */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base">All Teachers</CardTitle>
           <CardDescription>Faculty members across all departments</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Department</TableHead>
-                  <TableHead>Designation</TableHead>
-                  <TableHead className="text-right">Exams Created</TableHead>
-                  <TableHead className="text-right">Feedback Sent</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {(teachers ?? []).length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8">
-                      <p className="text-sm text-muted-foreground">
-                        No teachers found
-                      </p>
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  (teachers ?? []).map((teacher) => {
-                    const profile = teacher.profiles as any;
-                    const dept = teacher.departments as any;
-                    // Find matching user profile for created_by
-                    const teacherProfileId = profile?.id;
-                    const examsCount = teacherProfileId
-                      ? examCountMap.get(teacherProfileId) ?? 0
-                      : 0;
-                    const feedbackCount = feedbackCountMap.get(teacher.id) ?? 0;
-
-                    return (
-                      <TableRow key={teacher.id}>
-                        <TableCell className="font-medium">
-                          <Link
-                            href={`/admin/teachers/${teacher.id}`}
-                            className="hover:underline"
-                          >
-                            {profile?.full_name ?? "—"}
-                          </Link>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground">
-                              {profile?.email ?? "—"}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col">
-                            <span className="text-sm">{dept?.full_name ?? "—"}</span>
-                            <span className="text-xs text-muted-foreground">
-                              {dept?.name ?? ""}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary" className="text-xs">
-                            {teacher.designation}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <span className="text-sm font-medium">{examsCount}</span>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <span className="text-sm font-medium">
-                            {feedbackCount}
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
-          </div>
+        <CardContent className="space-y-4">
+          <TeachersClient teachers={teachersWithCounts} />
         </CardContent>
       </Card>
 
