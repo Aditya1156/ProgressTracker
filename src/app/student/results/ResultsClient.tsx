@@ -138,39 +138,39 @@ export default function ResultsClient({ marks }: ResultsClientProps) {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-sm">
-        <div className="p-3 bg-slate-50 rounded-lg border hover-lift transition-all">
+        <div className="p-3 bg-white/40 dark:bg-white/5 backdrop-blur-sm rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
           <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
             Total Results
           </div>
-          <div className="text-2xl font-semibold text-slate-900">{stats.total}</div>
+          <div className="text-2xl font-semibold text-foreground">{stats.total}</div>
         </div>
-        <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 hover-lift transition-all">
-          <div className="text-xs text-blue-700 uppercase tracking-wider mb-1">
+        <div className="p-3 bg-blue-500/10 rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
+          <div className="text-xs text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1">
             Average
           </div>
-          <div className="text-2xl font-semibold text-blue-900">
+          <div className="text-2xl font-semibold text-blue-900 dark:text-blue-300">
             {stats.total > 0 ? fmtPct(stats.avg) : "—"}
           </div>
         </div>
-        <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200 hover-lift transition-all">
-          <div className="text-xs text-emerald-700 uppercase tracking-wider mb-1">
+        <div className="p-3 bg-emerald-500/10 rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
+          <div className="text-xs text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1">
             Excellent
           </div>
-          <div className="text-2xl font-semibold text-emerald-900">
+          <div className="text-2xl font-semibold text-emerald-900 dark:text-emerald-300">
             {stats.excellent}
           </div>
         </div>
-        <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 hover-lift transition-all">
-          <div className="text-xs text-blue-700 uppercase tracking-wider mb-1">
+        <div className="p-3 bg-blue-500/10 rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
+          <div className="text-xs text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1">
             Good
           </div>
-          <div className="text-2xl font-semibold text-blue-900">{stats.good}</div>
+          <div className="text-2xl font-semibold text-blue-900 dark:text-blue-300">{stats.good}</div>
         </div>
-        <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 hover-lift transition-all">
-          <div className="text-xs text-amber-700 uppercase tracking-wider mb-1">
+        <div className="p-3 bg-amber-500/10 rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
+          <div className="text-xs text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1">
             Average
           </div>
-          <div className="text-2xl font-semibold text-amber-900">{stats.average}</div>
+          <div className="text-2xl font-semibold text-amber-900 dark:text-amber-300">{stats.average}</div>
         </div>
       </div>
 

@@ -24,10 +24,17 @@ export function StatCard({
   className,
 }: StatCardProps) {
   const variantStyles = {
-    default: 'bg-card',
-    success: 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800',
-    warning: 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800',
-    danger: 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800',
+    default: '',
+    success: 'bg-emerald-500/10 border-emerald-500/20 dark:bg-emerald-500/5 dark:border-emerald-500/15',
+    warning: 'bg-amber-500/10 border-amber-500/20 dark:bg-amber-500/5 dark:border-amber-500/15',
+    danger: 'bg-red-500/10 border-red-500/20 dark:bg-red-500/5 dark:border-red-500/15',
+  };
+
+  const iconColors = {
+    default: 'bg-primary/10 text-primary',
+    success: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400',
+    warning: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+    danger: 'bg-red-500/15 text-red-600 dark:text-red-400',
   };
 
   const trendIcons = {
@@ -37,23 +44,25 @@ export function StatCard({
   };
 
   const trendColors = {
-    up: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30',
-    down: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30',
-    stable: 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/30',
+    up: 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10',
+    down: 'text-red-600 dark:text-red-400 bg-red-500/10',
+    stable: 'text-slate-600 dark:text-slate-400 bg-slate-500/10',
   };
 
   return (
-    <Card className={cn('hover-lift', variantStyles[variant], className)}>
+    <Card className={cn('group hover:translate-y-[-2px]', variantStyles[variant], className)}>
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {label}
         </CardTitle>
-        <div className="text-muted-foreground">{icon}</div>
+        <div className={cn('rounded-xl p-2.5 transition-all duration-300 group-hover:scale-110', iconColors[variant])}>
+          {icon}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="flex items-end justify-between">
           <div>
-            <div className="text-2xl font-bold">{value}</div>
+            <div className="text-2xl font-bold tracking-tight">{value}</div>
             {trend && (
               <Badge
                 variant="secondary"

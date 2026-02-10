@@ -82,8 +82,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-md space-y-6">
+    <div className="gradient-mesh min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Floating orbs */}
+      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-orb-1 pointer-events-none" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/15 rounded-full blur-3xl animate-orb-2 pointer-events-none" />
+
+      <div className="w-full max-w-md space-y-6 relative z-10">
         {/* Brand */}
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-2">
@@ -98,7 +102,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <Card className="border-slate-200 shadow-sm">
+        <Card className="glass-strong rounded-3xl shadow-glass-lg">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-lg">
               {mode === "login" ? "Sign in" : "Create account"}

@@ -46,8 +46,8 @@ export function PerformanceLineChart({
         {showArea && (
           <defs>
             <linearGradient id="performanceGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={chartColors.primary} stopOpacity={0.2} />
-              <stop offset="100%" stopColor={chartColors.primary} stopOpacity={0} />
+              <stop offset="0%" stopColor={chartColors.primary} stopOpacity={0.4} />
+              <stop offset="100%" stopColor={chartColors.primary} stopOpacity={0.05} />
             </linearGradient>
           </defs>
         )}
@@ -100,8 +100,8 @@ export function PerformanceLineChart({
             dataKey={dataKey}
             stroke={chartColors.primary}
             strokeWidth={3}
-            dot={{ r: 5, fill: chartColors.primary, strokeWidth: 2, stroke: "hsl(var(--card))" }}
-            activeDot={{ r: 7 }}
+            dot={{ r: 6, fill: chartColors.primary, strokeWidth: 2, stroke: "hsl(var(--card))" }}
+            activeDot={{ r: 8 }}
             animationDuration={chartDefaults.animationDuration}
           />
         )}

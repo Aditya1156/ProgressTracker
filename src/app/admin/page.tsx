@@ -93,7 +93,7 @@ export default async function AdminDashboard() {
     <div className="space-y-6 max-w-5xl">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">
+        <h1 className="text-xl font-semibold text-foreground">
           {user.role === "principal" ? "Principal" : "HOD"} Dashboard
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -103,7 +103,7 @@ export default async function AdminDashboard() {
 
       {/* Summary cards */}
       <div className="grid sm:grid-cols-4 gap-4">
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Students
@@ -111,14 +111,14 @@ export default async function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <GraduationCap className="h-4 w-4 text-slate-500" />
-              <span className="text-2xl font-semibold text-slate-900">
+              <GraduationCap className="h-4 w-4 text-muted-foreground" />
+              <span className="text-2xl font-semibold text-foreground">
                 {totalStudents ?? 0}
               </span>
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Teachers
@@ -126,14 +126,14 @@ export default async function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-slate-500" />
-              <span className="text-2xl font-semibold text-slate-900">
+              <Users className="h-4 w-4 text-muted-foreground" />
+              <span className="text-2xl font-semibold text-foreground">
                 {totalTeachers ?? 0}
               </span>
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Exams
@@ -141,14 +141,14 @@ export default async function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-slate-500" />
-              <span className="text-2xl font-semibold text-slate-900">
+              <BookOpen className="h-4 w-4 text-muted-foreground" />
+              <span className="text-2xl font-semibold text-foreground">
                 {totalExams ?? 0}
               </span>
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Overall Average
@@ -157,8 +157,8 @@ export default async function AdminDashboard() {
           <CardContent>
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-emerald-500" />
-              <span className="text-2xl font-semibold text-slate-900">
-                {allPcts.length > 0 ? fmtPct(overallAvg) : "—"}
+              <span className="text-2xl font-semibold text-foreground">
+                {allPcts.length > 0 ? fmtPct(overallAvg) : "â€”"}
               </span>
             </div>
           </CardContent>
@@ -172,7 +172,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* At-Risk Students */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -205,7 +205,7 @@ export default async function AdminDashboard() {
                     <div key={s.id}>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-medium text-slate-900">
+                          <p className="text-sm font-medium text-foreground">
                             {profile?.full_name ?? "Student"}
                           </p>
                           <p className="text-xs text-muted-foreground">

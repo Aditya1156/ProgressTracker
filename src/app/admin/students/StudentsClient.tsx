@@ -155,33 +155,33 @@ export default function StudentsClient({ students }: StudentsClientProps) {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-        <div className="p-3 bg-slate-50 rounded-lg border hover-lift transition-all">
+        <div className="p-3 bg-white/40 dark:bg-white/5 backdrop-blur-sm rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
           <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
             Total
           </div>
-          <div className="text-2xl font-semibold text-slate-900">{stats.total}</div>
+          <div className="text-2xl font-semibold text-foreground">{stats.total}</div>
         </div>
-        <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 hover-lift transition-all">
-          <div className="text-xs text-blue-700 uppercase tracking-wider mb-1">
+        <div className="p-3 bg-blue-500/10 rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
+          <div className="text-xs text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1">
             With Results
           </div>
-          <div className="text-2xl font-semibold text-blue-900">
+          <div className="text-2xl font-semibold text-blue-900 dark:text-blue-300">
             {stats.withResults}
           </div>
         </div>
-        <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200 hover-lift transition-all">
-          <div className="text-xs text-emerald-700 uppercase tracking-wider mb-1">
+        <div className="p-3 bg-emerald-500/10 rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
+          <div className="text-xs text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1">
             Excellent
           </div>
-          <div className="text-2xl font-semibold text-emerald-900">
+          <div className="text-2xl font-semibold text-emerald-900 dark:text-emerald-300">
             {stats.excellent}
           </div>
         </div>
-        <div className="p-3 bg-red-50 rounded-lg border border-red-200 hover-lift transition-all">
-          <div className="text-xs text-red-700 uppercase tracking-wider mb-1">
+        <div className="p-3 bg-red-500/10 rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
+          <div className="text-xs text-red-700 dark:text-red-400 uppercase tracking-wider mb-1">
             At Risk
           </div>
-          <div className="text-2xl font-semibold text-red-900">{stats.atRisk}</div>
+          <div className="text-2xl font-semibold text-red-900 dark:text-red-300">{stats.atRisk}</div>
         </div>
       </div>
 

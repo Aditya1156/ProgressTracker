@@ -106,7 +106,7 @@ export default async function AdminAnalyticsPage() {
   return (
     <div className="space-y-6 max-w-7xl">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Analytics</h1>
+        <h1 className="text-xl font-semibold text-foreground">Analytics</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Detailed insights and performance metrics
         </p>
@@ -114,7 +114,7 @@ export default async function AdminAnalyticsPage() {
 
       {/* Summary Cards */}
       <div className="grid sm:grid-cols-4 gap-4">
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Overall Average
@@ -122,7 +122,7 @@ export default async function AdminAnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-semibold text-slate-900">
+              <span className="text-2xl font-semibold text-foreground">
                 {percentages.length > 0 ? fmtPct(overallAvg) : "—"}
               </span>
               {overallAvg >= 60 ? (
@@ -134,7 +134,7 @@ export default async function AdminAnalyticsPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Total Students
@@ -142,15 +142,15 @@ export default async function AdminAnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-semibold text-slate-900">
+              <span className="text-2xl font-semibold text-foreground">
                 {totalStudents}
               </span>
-              <Users className="h-5 w-5 text-slate-500" />
+              <Users className="h-5 w-5 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Total Exams
@@ -158,15 +158,15 @@ export default async function AdminAnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-semibold text-slate-900">
+              <span className="text-2xl font-semibold text-foreground">
                 {totalExams}
               </span>
-              <Award className="h-5 w-5 text-slate-500" />
+              <Award className="h-5 w-5 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Excellence Rate

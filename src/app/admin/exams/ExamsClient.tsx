@@ -25,11 +25,11 @@ interface ExamsClientProps {
 }
 
 const typeColors: Record<string, string> = {
-  class_test: "bg-blue-50 text-blue-700 border-blue-200",
-  mid_sem: "bg-purple-50 text-purple-700 border-purple-200",
-  end_sem: "bg-red-50 text-red-700 border-red-200",
-  assignment: "bg-green-50 text-green-700 border-green-200",
-  practical: "bg-amber-50 text-amber-700 border-amber-200",
+  class_test: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-[var(--glass-border)]",
+  mid_sem: "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-[var(--glass-border)]",
+  end_sem: "bg-red-500/10 text-red-700 dark:text-red-400 border-[var(--glass-border)]",
+  assignment: "bg-green-500/10 text-green-700 dark:text-green-400 border-[var(--glass-border)]",
+  practical: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-[var(--glass-border)]",
 };
 
 const typeLabels: Record<string, string> = {

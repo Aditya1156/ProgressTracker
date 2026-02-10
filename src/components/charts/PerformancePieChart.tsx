@@ -73,6 +73,9 @@ export function PerformancePieChart({
           labelLine={false}
           label={renderCustomLabel}
           outerRadius={height / 3}
+          innerRadius={height / 6}
+          stroke="rgba(255,255,255,0.5)"
+          strokeWidth={2}
           fill="#8884d8"
           dataKey="value"
           animationDuration={chartDefaults.animationDuration}

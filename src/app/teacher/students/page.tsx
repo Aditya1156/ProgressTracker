@@ -27,7 +27,7 @@ export default async function TeacherStudentsPage() {
 
   if (!teacher) {
     return (
-      <Card>
+      <Card className="glass-card">
         <CardContent className="py-12 text-center text-muted-foreground">
           Teacher profile not found.
         </CardContent>
@@ -66,13 +66,13 @@ export default async function TeacherStudentsPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Students</h1>
+        <h1 className="text-xl font-semibold text-foreground">Students</h1>
         <p className="text-sm text-muted-foreground mt-1">
           {deptName} Department &middot; {studentStats.length} students
         </p>
       </div>
 
-      <Card>
+      <Card className="glass-card">
         <CardContent className="pt-6">
           {studentStats.length === 0 ? (
             <p className="text-sm text-muted-foreground py-8 text-center">

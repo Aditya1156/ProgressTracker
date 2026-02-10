@@ -14,7 +14,7 @@ export default function AdminLoading() {
       {/* Summary cards skeleton */}
       <div className="grid sm:grid-cols-4 gap-4">
         {[...Array(4)].map((_, i) => (
-          <Card key={i} className="animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
+          <Card key={i} className="glass-card animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
             <CardHeader className="pb-2">
               <Skeleton className="h-3 w-20" />
             </CardHeader>
@@ -30,7 +30,7 @@ export default function AdminLoading() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Department Performance skeleton */}
-        <Card className="animate-fade-in animate-delay-400">
+        <Card className="glass-card animate-fade-in animate-delay-400">
           <CardHeader className="pb-3">
             <Skeleton className="h-5 w-40 mb-1" />
             <Skeleton className="h-4 w-48" />
@@ -51,7 +51,7 @@ export default function AdminLoading() {
         </Card>
 
         {/* At-Risk Students skeleton */}
-        <Card className="animate-fade-in animate-delay-500">
+        <Card className="glass-card animate-fade-in animate-delay-500">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">

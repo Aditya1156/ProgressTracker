@@ -37,7 +37,7 @@ export function PerformanceRadarChart({
     <ResponsiveContainer width="100%" height={height}>
       <RadarChart data={chartData}>
         <PolarGrid
-          stroke="hsl(var(--border))"
+          stroke="rgba(0,0,0,0.06)"
           strokeDasharray="3 3"
         />
         <PolarAngleAxis

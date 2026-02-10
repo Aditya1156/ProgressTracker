@@ -333,14 +333,14 @@ export default function TeacherMarksPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Enter Marks</h1>
+        <h1 className="text-xl font-semibold text-foreground">Enter Marks</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Select a subject and exam, then enter student marks
         </p>
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="glass-card">
         <CardContent className="pt-6">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -493,7 +493,7 @@ export default function TeacherMarksPage() {
 
       {/* Marks entry table */}
       {selectedExam && (
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div>

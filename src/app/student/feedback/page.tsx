@@ -47,25 +47,25 @@ export default async function StudentFeedbackPage() {
   const allFeedback = feedbackList ?? [];
 
   const typeColors: Record<string, string> = {
-    appreciation: "bg-emerald-50 text-emerald-700",
-    improvement: "bg-blue-50 text-blue-700",
-    concern: "bg-red-50 text-red-700",
-    general: "bg-slate-50 text-slate-700",
+    appreciation: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+    improvement: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
+    concern: "bg-red-500/10 text-red-700 dark:text-red-400",
+    general: "bg-white/40 dark:bg-white/5 text-foreground/80",
   };
 
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Feedback</h1>
+        <h1 className="text-xl font-semibold text-foreground">Feedback</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Feedback from your teachers
         </p>
       </div>
 
       {allFeedback.length === 0 ? (
-        <Card>
+        <Card className="glass-card">
           <CardContent className="py-12 text-center text-muted-foreground">
-            <MessageSquare className="h-8 w-8 mx-auto mb-3 text-slate-300" />
+            <MessageSquare className="h-8 w-8 mx-auto mb-3 text-muted-foreground/50" />
             <p>No feedback yet.</p>
           </CardContent>
         </Card>
@@ -75,7 +75,7 @@ export default async function StudentFeedbackPage() {
             const teacher = fb.teachers as any;
             const subject = fb.subjects as any;
             return (
-              <Card key={fb.id}>
+              <Card key={fb.id} className="glass-card">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -99,7 +99,7 @@ export default async function StudentFeedbackPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-slate-700 leading-relaxed">
+                  <p className="text-sm text-foreground/80 leading-relaxed">
                     {fb.message}
                   </p>
                   <p className="text-xs text-muted-foreground mt-3">

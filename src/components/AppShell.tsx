@@ -18,9 +18,9 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import type { UserRole } from "@/lib/auth";
+import { PageTransition } from "@/components/motion";
 
 interface NavItem {
   href: string;
@@ -87,32 +87,34 @@ export default function AppShell({ children, user }: AppShellProps) {
       : "Student";
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50">
+    <div className="flex h-screen overflow-hidden gradient-mesh">
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-60 border-r border-slate-200 bg-white flex flex-col transition-transform duration-200 ease-in-out lg:static lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 w-60 glass-sidebar flex flex-col transition-transform duration-300 ease-in-out lg:static lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Brand */}
-        <div className="flex items-center justify-between h-14 px-4 border-b border-slate-200">
-          <Link href="/" className="flex items-center gap-2">
-            <GraduationCap className="h-5 w-5 text-slate-800" />
-            <span className="font-semibold text-sm tracking-tight text-slate-900">
+        <div className="flex items-center justify-between h-14 px-4 border-b border-[var(--glass-border)]">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="rounded-lg bg-primary/10 p-1.5">
+              <GraduationCap className="h-4 w-4 text-primary" />
+            </div>
+            <span className="font-bold text-sm tracking-tight gradient-text">
               AcadTrack
             </span>
           </Link>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-1 rounded hover:bg-slate-100"
+            className="lg:hidden p-1.5 rounded-lg hover:bg-white/30 dark:hover:bg-white/10 transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto glass-scrollbar">
           {navItems.map((item) => {
             const active = pathname === item.href;
             return (
@@ -121,41 +123,49 @@ export default function AppShell({ children, user }: AppShellProps) {
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200",
                   active
-                    ? "bg-slate-100 text-slate-900 font-medium"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    ? "bg-primary/10 text-primary font-medium border border-primary/20 shadow-glass-sm"
+                    : "text-muted-foreground hover:bg-white/40 dark:hover:bg-white/5 hover:text-foreground"
                 )}
               >
-                {item.icon}
+                <span className={cn(
+                  "flex items-center justify-center w-6 h-6 rounded-lg transition-colors",
+                  active ? "text-primary" : ""
+                )}>
+                  {item.icon}
+                </span>
                 {item.label}
+                {active && (
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary animate-glow-pulse" />
+                )}
               </Link>
             );
           })}
         </nav>
 
         {/* User section */}
-        <div className="border-t border-slate-200 p-4">
+        <div className="border-t border-[var(--glass-border)] p-4">
           <div className="flex items-center gap-3">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-slate-200 text-slate-700 text-xs">
+            <Avatar className="h-9 w-9 ring-2 ring-primary/20">
+              <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
                 {initials}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-slate-900 truncate">
+              <p className="text-sm font-semibold truncate">
                 {user.fullName}
               </p>
               <p className="text-xs text-muted-foreground">{roleBadge}</p>
             </div>
           </div>
-          <Separator className="my-3" />
+          <div className="border-t border-[var(--glass-border)] my-3" />
           <form action="/auth/signout" method="POST">
             <Button
               type="submit"
               variant="ghost"
               size="sm"
-              className="w-full justify-start text-slate-600 hover:text-slate-900"
+              className="w-full justify-start text-muted-foreground hover:text-destructive"
             >
               <LogOut className="mr-2 h-4 w-4" />
               Sign out
@@ -167,7 +177,7 @@ export default function AppShell({ children, user }: AppShellProps) {
       {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/20 lg:hidden"
+          className="fixed inset-0 z-30 bg-black/30 backdrop-blur-sm lg:hidden transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -175,20 +185,25 @@ export default function AppShell({ children, user }: AppShellProps) {
       {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar (mobile) */}
-        <header className="flex items-center h-14 px-4 border-b border-slate-200 bg-white lg:hidden">
+        <header className="flex items-center h-14 px-4 glass-strong border-b border-[var(--glass-border)] lg:hidden">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded hover:bg-slate-100 -ml-2"
+            className="p-2 rounded-lg hover:bg-white/30 dark:hover:bg-white/10 -ml-2 transition-colors"
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="ml-3 font-semibold text-sm text-slate-900">
-            AcadTrack
-          </span>
+          <div className="ml-3 flex items-center gap-2">
+            <GraduationCap className="h-4 w-4 text-primary" />
+            <span className="font-bold text-sm gradient-text">
+              AcadTrack
+            </span>
+          </div>
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6 glass-scrollbar">
+          <PageTransition>{children}</PageTransition>
+        </main>
       </div>
     </div>
   );

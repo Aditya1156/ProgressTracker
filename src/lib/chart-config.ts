@@ -38,11 +38,12 @@ export const chartDefaults = {
 
 export const tooltipStyles = {
   contentStyle: {
-    backgroundColor: "hsl(var(--card))",
-    border: "1px solid hsl(var(--border))",
-    borderRadius: "var(--radius)",
-    padding: "8px 12px",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    background: "rgba(255,255,255,0.8)",
+    backdropFilter: "blur(16px) saturate(1.8)",
+    border: "1px solid rgba(255,255,255,0.25)",
+    borderRadius: "12px",
+    padding: "12px 16px",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
   },
   labelStyle: {
     color: "hsl(var(--foreground))",
@@ -88,6 +89,6 @@ export const axisStyle = {
 
 // Grid styling
 export const gridStyle = {
-  stroke: "hsl(var(--border))",
+  stroke: "rgba(0,0,0,0.06)",
   strokeDasharray: "3 3",
 };

@@ -133,10 +133,10 @@ export default function TeacherFeedbackPage() {
   }
 
   const typeColors: Record<string, string> = {
-    appreciation: "bg-emerald-50 text-emerald-700",
-    improvement: "bg-blue-50 text-blue-700",
-    concern: "bg-red-50 text-red-700",
-    general: "bg-slate-50 text-slate-700",
+    appreciation: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
+    improvement: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
+    concern: "bg-red-500/10 text-red-700 dark:text-red-400",
+    general: "bg-white/40 dark:bg-white/5 text-foreground/80",
   };
 
   if (loading) {
@@ -150,7 +150,7 @@ export default function TeacherFeedbackPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Feedback</h1>
+        <h1 className="text-xl font-semibold text-foreground">Feedback</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Send personalized feedback to students
         </p>
@@ -158,7 +158,7 @@ export default function TeacherFeedbackPage() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Compose */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Send Feedback</CardTitle>
           </CardHeader>
@@ -237,7 +237,7 @@ export default function TeacherFeedbackPage() {
         </Card>
 
         {/* Recent */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Recent Feedback</CardTitle>
             <CardDescription>Your last 10 messages</CardDescription>
@@ -266,7 +266,7 @@ export default function TeacherFeedbackPage() {
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-slate-700 line-clamp-2">
+                        <p className="text-sm text-foreground/80 line-clamp-2">
                           {fb.message}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">

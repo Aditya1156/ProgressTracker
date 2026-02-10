@@ -36,8 +36,8 @@ export default async function StudentDashboard() {
   if (!student) {
     return (
       <div className="space-y-4">
-        <h1 className="text-xl font-semibold text-slate-900">Welcome, {user.fullName}</h1>
-        <Card>
+        <h1 className="text-xl font-semibold text-foreground">Welcome, {user.fullName}</h1>
+        <Card className="glass-card">
           <CardContent className="py-12 text-center text-muted-foreground">
             <p>Your student profile hasn&apos;t been set up yet.</p>
             <p className="text-sm mt-1">Please contact your department administrator.</p>
@@ -124,7 +124,7 @@ export default async function StudentDashboard() {
     <div className="space-y-6 max-w-4xl">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">
+        <h1 className="text-xl font-semibold text-foreground">
           Welcome back, {user.fullName.split(" ")[0]}
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -135,7 +135,7 @@ export default async function StudentDashboard() {
       {/* Summary cards */}
       <div className="grid sm:grid-cols-3 gap-4">
         {/* Overall Average */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Overall Average
@@ -143,7 +143,7 @@ export default async function StudentDashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-semibold text-slate-900">
+              <span className="text-2xl font-semibold text-foreground">
                 {percentages.length > 0 ? fmtPct(avg) : "—"}
               </span>
               <Badge variant="secondary" className={`${category.bgColor} ${category.color} border-0 text-xs`}>
@@ -154,7 +154,7 @@ export default async function StudentDashboard() {
         </Card>
 
         {/* Trend */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Performance Trend
@@ -171,7 +171,7 @@ export default async function StudentDashboard() {
         </Card>
 
         {/* Exams Taken / Feedback */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Activity
@@ -179,7 +179,7 @@ export default async function StudentDashboard() {
           </CardHeader>
           <CardContent className="space-y-1">
             <div className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-slate-500" />
+              <BookOpen className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">
                 <span className="font-medium">{allMarks.length}</span> exams taken
               </span>
@@ -198,14 +198,14 @@ export default async function StudentDashboard() {
 
       {/* Risk alert - only show if not safe */}
       {risk.level !== "Safe" && (
-        <Card className="border-amber-200 bg-amber-50/50">
+        <Card className="glass-card border-amber-500/20 bg-amber-500/10">
           <CardContent className="py-4">
             <div className="flex items-center gap-3">
               <div className={`h-2 w-2 rounded-full ${
                 risk.level === "High Risk" ? "bg-red-500" :
                 risk.level === "At Risk" ? "bg-orange-500" : "bg-amber-500"
               }`} />
-              <p className="text-sm text-slate-700">
+              <p className="text-sm text-foreground/80">
                 {risk.level === "High Risk"
                   ? "Your scores need urgent attention. Consider reaching out to your teacher."
                   : risk.level === "At Risk"
@@ -227,7 +227,7 @@ export default async function StudentDashboard() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Recent Results */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">Recent Results</CardTitle>
@@ -253,7 +253,7 @@ export default async function StudentDashboard() {
                     <div key={i}>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-medium text-slate-900">
+                          <p className="text-sm font-medium text-foreground">
                             {exam?.subjects?.code ?? "—"}: {exam?.name ?? "Exam"}
                           </p>
                           <p className="text-xs text-muted-foreground">

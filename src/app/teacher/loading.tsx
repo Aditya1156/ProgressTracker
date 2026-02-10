@@ -13,7 +13,7 @@ export default function TeacherLoading() {
       {/* Summary cards skeleton */}
       <div className="grid sm:grid-cols-4 gap-4">
         {[...Array(4)].map((_, i) => (
-          <Card key={i} className="animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
+          <Card key={i} className="glass-card animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
             <CardHeader className="pb-2">
               <Skeleton className="h-3 w-24" />
             </CardHeader>
@@ -29,7 +29,7 @@ export default function TeacherLoading() {
 
       <div className="grid gap-6">
         {/* At-Risk Students Card */}
-        <Card className="animate-fade-in animate-delay-400">
+        <Card className="glass-card animate-fade-in animate-delay-400">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2 mb-1">
               <Skeleton className="h-4 w-4 rounded" />
@@ -58,7 +58,7 @@ export default function TeacherLoading() {
         {/* Quick Actions */}
         <div className="grid sm:grid-cols-3 gap-4 animate-fade-in animate-delay-500">
           {[...Array(3)].map((_, i) => (
-            <Card key={i} className="hover-lift">
+            <Card key={i} className="glass-card hover-lift">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3">
                   <Skeleton className="h-8 w-8 rounded" />
