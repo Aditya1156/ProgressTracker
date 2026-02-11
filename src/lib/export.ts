@@ -96,3 +96,32 @@ export function formatMarksDataForExport(marks: any[]) {
     "Date": m.exams?.exam_date ?? "—",
   }));
 }
+
+export function formatAttendanceDataForExport(records: any[]) {
+  return records.map((r) => ({
+    "Roll No": r.students?.roll_no ?? "—",
+    "Student Name": r.students?.profiles?.full_name ?? "—",
+    "Subject": r.subjects?.name ?? "—",
+    "Subject Code": r.subjects?.code ?? "—",
+    "Date": r.date,
+    "Status": r.status ? r.status.charAt(0).toUpperCase() + r.status.slice(1) : "—",
+    "Remarks": r.remarks ?? "",
+  }));
+}
+
+export function formatAttendanceSummaryForExport(summaries: any[]) {
+  return summaries.map((s) => ({
+    "Roll No": s.rollNo ?? "—",
+    "Student Name": s.name ?? "—",
+    "Department": s.department ?? "—",
+    "Semester": s.semester ?? "—",
+    "Subject": s.subject ?? "—",
+    "Total Classes": s.totalClasses ?? 0,
+    "Present": s.present ?? 0,
+    "Absent": s.absent ?? 0,
+    "Late": s.late ?? 0,
+    "Excused": s.excused ?? 0,
+    "Attendance %": s.percentage != null ? s.percentage.toFixed(2) : "0.00",
+    "Status": (s.percentage ?? 0) >= 75 ? "Above Threshold" : "Below Threshold",
+  }));
+}

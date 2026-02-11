@@ -10,6 +10,7 @@ import {
   BarChart3,
   MessageSquare,
   ClipboardList,
+  CalendarCheck,
   Settings,
   LogOut,
   Menu,
@@ -34,12 +35,14 @@ function getNavItems(role: UserRole): NavItem[] {
       return [
         { href: "/student", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
         { href: "/student/results", label: "Results", icon: <BookOpen className="h-4 w-4" /> },
+        { href: "/student/attendance", label: "Attendance", icon: <CalendarCheck className="h-4 w-4" /> },
         { href: "/student/feedback", label: "Feedback", icon: <MessageSquare className="h-4 w-4" /> },
       ];
     case "teacher":
       return [
         { href: "/teacher", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
         { href: "/teacher/marks", label: "Enter Marks", icon: <ClipboardList className="h-4 w-4" /> },
+        { href: "/teacher/attendance", label: "Attendance", icon: <CalendarCheck className="h-4 w-4" /> },
         { href: "/teacher/students", label: "Students", icon: <Users className="h-4 w-4" /> },
         { href: "/teacher/feedback", label: "Feedback", icon: <MessageSquare className="h-4 w-4" /> },
       ];
@@ -48,6 +51,7 @@ function getNavItems(role: UserRole): NavItem[] {
       return [
         { href: "/admin", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
         { href: "/admin/analytics", label: "Analytics", icon: <BarChart3 className="h-4 w-4" /> },
+        { href: "/admin/attendance", label: "Attendance", icon: <CalendarCheck className="h-4 w-4" /> },
         { href: "/admin/students", label: "Students", icon: <Users className="h-4 w-4" /> },
         { href: "/admin/exams", label: "Exams", icon: <BookOpen className="h-4 w-4" /> },
         { href: "/admin/teachers", label: "Teachers", icon: <Settings className="h-4 w-4" /> },

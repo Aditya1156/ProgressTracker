@@ -58,7 +58,7 @@ export function PerformanceRadarChart({
           contentStyle={tooltipStyles.contentStyle}
           labelStyle={tooltipStyles.labelStyle}
           itemStyle={tooltipStyles.itemStyle}
-          formatter={(value: number) => [`${value.toFixed(1)}%`, "Score"]}
+          formatter={(value) => [`${Number(value).toFixed(1)}%`, "Score"]}
         />
         {showLegend && (
           <Legend

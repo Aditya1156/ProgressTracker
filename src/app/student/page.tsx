@@ -16,6 +16,7 @@ import {
   BookOpen,
   Target,
   ArrowRight,
+  CalendarCheck,
 } from "lucide-react";
 import { classifyLearner, detectTrend, predictRisk, fmtPct, formatDate } from "@/lib/utils";
 import Link from "next/link";
@@ -70,6 +71,18 @@ export default async function StudentDashboard() {
     .select("*", { count: "exact", head: true })
     .eq("student_id", student.id)
     .eq("is_read", false);
+
+  // Get attendance data
+  const { data: attendanceRecords } = await supabase
+    .from("attendance")
+    .select("status")
+    .eq("student_id", student.id);
+
+  const totalClasses = (attendanceRecords ?? []).length;
+  const classesAttended = (attendanceRecords ?? []).filter(
+    (r) => r.status === "present" || r.status === "late"
+  ).length;
+  const attendancePct = totalClasses > 0 ? (classesAttended / totalClasses) * 100 : -1;
 
   // ── Compute analytics ──
   const allMarks = marks ?? [];
@@ -133,7 +146,7 @@ export default async function StudentDashboard() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid sm:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-4 gap-4">
         {/* Overall Average */}
         <Card className="glass-card">
           <CardHeader className="pb-2">
@@ -167,6 +180,34 @@ export default async function StudentDashboard() {
                 {trend.label}
               </span>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Attendance */}
+        <Card className="glass-card">
+          <CardHeader className="pb-2">
+            <CardDescription className="text-xs uppercase tracking-wider">
+              Attendance
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-baseline gap-2">
+              <span className={`text-2xl font-semibold ${
+                attendancePct >= 75 ? "text-emerald-600" : attendancePct >= 0 ? "text-red-600" : "text-foreground"
+              }`}>
+                {attendancePct >= 0 ? fmtPct(attendancePct) : "—"}
+              </span>
+              {attendancePct >= 0 && attendancePct < 75 && (
+                <Badge variant="secondary" className="text-xs bg-red-50 text-red-700 border-0">
+                  Below 75%
+                </Badge>
+              )}
+            </div>
+            {attendancePct >= 0 && (
+              <Link href="/student/attendance" className="text-xs text-muted-foreground hover:text-foreground mt-1 inline-flex items-center gap-1">
+                View details <ArrowRight className="h-3 w-3" />
+              </Link>
+            )}
           </CardContent>
         </Card>
 
@@ -213,6 +254,24 @@ export default async function StudentDashboard() {
                   : "You're close to the threshold. A bit more effort will help."
                 }
               </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Attendance alert */}
+      {attendancePct >= 0 && attendancePct < 75 && (
+        <Card className="glass-card border-red-500/20 bg-red-500/10">
+          <CardContent className="py-4">
+            <div className="flex items-center gap-3">
+              <div className="h-2 w-2 rounded-full bg-red-500" />
+              <p className="text-sm text-foreground/80">
+                Your attendance ({fmtPct(attendancePct)}) is below the minimum 75% threshold.
+                You may be ineligible to sit for exams.
+              </p>
+              <Link href="/student/attendance" className="text-xs text-red-600 hover:underline ml-auto whitespace-nowrap">
+                View Details
+              </Link>
             </div>
           </CardContent>
         </Card>

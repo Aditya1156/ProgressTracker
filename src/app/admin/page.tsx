@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   TrendingUp,
   ArrowRight,
+  CalendarCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { classifyLearner, fmtPct } from "@/lib/utils";
@@ -33,6 +34,7 @@ export default async function AdminDashboard() {
     { data: departments },
     { data: students },
     { data: allMarks },
+    { data: attendanceData },
   ] = await Promise.all([
     supabase.from("students").select("*", { count: "exact", head: true }),
     supabase.from("teachers").select("*", { count: "exact", head: true }),
@@ -40,7 +42,17 @@ export default async function AdminDashboard() {
     supabase.from("departments").select("id, name, full_name"),
     supabase.from("students").select("id, roll_no, department_id, semester, profiles(full_name)"),
     supabase.from("marks").select("student_id, marks_obtained, exams(max_marks, subject_id, subjects(department_id))"),
+    supabase.from("attendance").select("status"),
   ]);
+
+  // Compute attendance rate
+  const totalAttendanceRecords = (attendanceData ?? []).length;
+  const attendedRecords = (attendanceData ?? []).filter(
+    (r) => r.status === "present" || r.status === "late"
+  ).length;
+  const attendanceRate = totalAttendanceRecords > 0
+    ? (attendedRecords / totalAttendanceRecords) * 100
+    : -1;
 
   // Compute per-student averages
   const studentAvgs = new Map<string, number[]>();
@@ -102,7 +114,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid sm:grid-cols-4 gap-4">
+      <div className="grid sm:grid-cols-5 gap-4">
         <Card className="glass-card">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
@@ -158,9 +170,29 @@ export default async function AdminDashboard() {
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-emerald-500" />
               <span className="text-2xl font-semibold text-foreground">
-                {allPcts.length > 0 ? fmtPct(overallAvg) : "â€”"}
+                {allPcts.length > 0 ? fmtPct(overallAvg) : "\u2014"}
               </span>
             </div>
+          </CardContent>
+        </Card>
+        <Card className="glass-card">
+          <CardHeader className="pb-2">
+            <CardDescription className="text-xs uppercase tracking-wider">
+              Attendance Rate
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2">
+              <CalendarCheck className={`h-4 w-4 ${attendanceRate >= 75 ? "text-emerald-500" : attendanceRate >= 0 ? "text-amber-500" : "text-muted-foreground"}`} />
+              <span className={`text-2xl font-semibold ${attendanceRate >= 75 ? "text-emerald-600" : attendanceRate >= 0 ? "text-amber-600" : "text-foreground"}`}>
+                {attendanceRate >= 0 ? fmtPct(attendanceRate) : "\u2014"}
+              </span>
+            </div>
+            {attendanceRate >= 0 && (
+              <Link href="/admin/attendance" className="text-xs text-muted-foreground hover:text-foreground mt-1 inline-flex items-center gap-1">
+                View details <ArrowRight className="h-3 w-3" />
+              </Link>
+            )}
           </CardContent>
         </Card>
       </div>

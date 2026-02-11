@@ -92,3 +92,19 @@ export const gridStyle = {
   stroke: "rgba(0,0,0,0.06)",
   strokeDasharray: "3 3",
 };
+
+// Attendance-specific chart colors
+export const attendanceColors = {
+  present: "hsl(142, 71%, 45%)",  // emerald-500
+  absent: "hsl(0, 72%, 51%)",     // red-500
+  late: "hsl(38, 92%, 50%)",      // amber-500
+  excused: "hsl(217, 91%, 60%)",  // blue-500
+};
+
+// Get attendance color based on percentage
+export function getAttendanceColor(percentage: number): string {
+  if (percentage >= 85) return chartColors.excellent;
+  if (percentage >= 75) return chartColors.good;
+  if (percentage >= 60) return chartColors.average;
+  return chartColors.poor;
+}

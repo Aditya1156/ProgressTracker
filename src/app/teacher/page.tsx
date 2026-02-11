@@ -14,6 +14,7 @@ import {
   ClipboardList,
   AlertTriangle,
   ArrowRight,
+  CalendarCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { classifyLearner, fmtPct } from "@/lib/utils";
@@ -247,6 +248,19 @@ export default async function TeacherDashboard() {
                 <p className="text-sm font-medium text-foreground">Enter Marks</p>
                 <p className="text-xs text-muted-foreground">
                   Record exam scores for your students
+                </p>
+              </div>
+              <ArrowRight className="h-4 w-4 text-muted-foreground ml-auto" />
+            </Link>
+            <Link
+              href="/teacher/attendance"
+              className="flex items-center gap-3 p-3 rounded-lg border border-[var(--glass-border)] hover:bg-white/30 dark:hover:bg-white/5 transition-colors"
+            >
+              <CalendarCheck className="h-5 w-5 text-muted-foreground" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Take Attendance</p>
+                <p className="text-xs text-muted-foreground">
+                  Mark attendance for your classes
                 </p>
               </div>
               <ArrowRight className="h-4 w-4 text-muted-foreground ml-auto" />
