@@ -25,11 +25,11 @@ interface ExamsClientProps {
 }
 
 const typeColors: Record<string, string> = {
-  class_test: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-[var(--glass-border)]",
-  mid_sem: "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-[var(--glass-border)]",
-  end_sem: "bg-red-500/10 text-red-700 dark:text-red-400 border-[var(--glass-border)]",
-  assignment: "bg-green-500/10 text-green-700 dark:text-green-400 border-[var(--glass-border)]",
-  practical: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-[var(--glass-border)]",
+  class_test: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-gray-200/80",
+  mid_sem: "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-gray-200/80",
+  end_sem: "bg-red-500/10 text-red-700 dark:text-red-400 border-gray-200/80",
+  assignment: "bg-green-500/10 text-green-700 dark:text-green-400 border-gray-200/80",
+  practical: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-gray-200/80",
 };
 
 const typeLabels: Record<string, string> = {
@@ -60,7 +60,7 @@ export default function ExamsClient({ exams }: ExamsClientProps) {
           return (
             <div className="flex flex-col">
               <span className="text-sm">{subject?.name ?? "—"}</span>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-gray-400">
                 {subject?.code ?? ""}
               </span>
             </div>
@@ -127,7 +127,7 @@ export default function ExamsClient({ exams }: ExamsClientProps) {
             className={`text-right block text-sm font-medium ${
               (row.original.marksCount ?? 0) > 0
                 ? "text-emerald-600"
-                : "text-muted-foreground"
+                : "text-gray-400"
             }`}
           >
             {row.original.marksCount ?? 0}

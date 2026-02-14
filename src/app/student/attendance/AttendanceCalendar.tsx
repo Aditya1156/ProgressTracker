@@ -97,7 +97,7 @@ export function AttendanceCalendar({
   }
 
   return (
-    <Card className="glass-card">
+    <Card className="border-gray-200/80 shadow-sm">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">Attendance Calendar</CardTitle>
@@ -135,7 +135,7 @@ export function AttendanceCalendar({
           {dayNames.map((d) => (
             <div
               key={d}
-              className="text-center text-xs text-muted-foreground font-medium py-1"
+              className="text-center text-xs text-gray-400 font-medium py-1"
             >
               {d}
             </div>
@@ -164,7 +164,7 @@ export function AttendanceCalendar({
                 `}
               >
                 <span
-                  className={`text-xs ${isToday ? "font-semibold text-primary" : "text-muted-foreground"}`}
+                  className={`text-xs ${isToday ? "font-semibold text-primary" : "text-gray-400"}`}
                 >
                   {day}
                 </span>
@@ -190,7 +190,7 @@ export function AttendanceCalendar({
         </div>
 
         {/* Legend */}
-        <div className="flex items-center justify-center gap-4 mt-4 pt-3 border-t border-[var(--glass-border)]">
+        <div className="flex items-center justify-center gap-4 mt-4 pt-3 border-t border-gray-200/80">
           {(["present", "absent", "late", "excused"] as AttendanceStatus[]).map(
             (status) => {
               const config = getStatusConfig(status);
@@ -199,7 +199,7 @@ export function AttendanceCalendar({
                   <span
                     className={`w-2 h-2 rounded-full ${config.dotColor}`}
                   />
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-gray-400">
                     {config.label}
                   </span>
                 </div>

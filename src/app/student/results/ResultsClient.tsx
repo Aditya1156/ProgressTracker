@@ -105,7 +105,7 @@ export default function ResultsClient({ marks }: ResultsClientProps) {
           const exam = row.original.exams as any;
           const date = exam?.exam_date || row.original.created_at;
           return (
-            <span className="text-right block text-sm text-muted-foreground">
+            <span className="text-right block text-sm text-gray-400">
               {formatDate(date)}
             </span>
           );
@@ -138,13 +138,13 @@ export default function ResultsClient({ marks }: ResultsClientProps) {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-sm">
-        <div className="p-3 bg-white/40 dark:bg-white/5 backdrop-blur-sm rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
-          <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+        <div className="p-3 bg-gray-50 rounded-lg border border-gray-200/80 hover-lift transition-all">
+          <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">
             Total Results
           </div>
-          <div className="text-2xl font-semibold text-foreground">{stats.total}</div>
+          <div className="text-2xl font-semibold text-gray-800">{stats.total}</div>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
+        <div className="p-3 bg-blue-500/10 rounded-lg border border-gray-200/80 hover-lift transition-all">
           <div className="text-xs text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1">
             Average
           </div>
@@ -152,7 +152,7 @@ export default function ResultsClient({ marks }: ResultsClientProps) {
             {stats.total > 0 ? fmtPct(stats.avg) : "—"}
           </div>
         </div>
-        <div className="p-3 bg-emerald-500/10 rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
+        <div className="p-3 bg-emerald-500/10 rounded-lg border border-gray-200/80 hover-lift transition-all">
           <div className="text-xs text-emerald-700 dark:text-emerald-400 uppercase tracking-wider mb-1">
             Excellent
           </div>
@@ -160,13 +160,13 @@ export default function ResultsClient({ marks }: ResultsClientProps) {
             {stats.excellent}
           </div>
         </div>
-        <div className="p-3 bg-blue-500/10 rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
+        <div className="p-3 bg-blue-500/10 rounded-lg border border-gray-200/80 hover-lift transition-all">
           <div className="text-xs text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1">
             Good
           </div>
           <div className="text-2xl font-semibold text-blue-900 dark:text-blue-300">{stats.good}</div>
         </div>
-        <div className="p-3 bg-amber-500/10 rounded-lg border border-[var(--glass-border)] hover-lift transition-all">
+        <div className="p-3 bg-amber-500/10 rounded-lg border border-gray-200/80 hover-lift transition-all">
           <div className="text-xs text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1">
             Average
           </div>

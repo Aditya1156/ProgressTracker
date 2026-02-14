@@ -13,37 +13,36 @@ export default function TeacherLoading() {
       {/* Summary cards skeleton */}
       <div className="grid sm:grid-cols-4 gap-4">
         {[...Array(4)].map((_, i) => (
-          <Card key={i} className="glass-card animate-fade-in" style={{ animationDelay: `${i * 100}ms` }}>
-            <CardHeader className="pb-2">
-              <Skeleton className="h-3 w-24" />
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-4 w-4 rounded" />
-                <Skeleton className="h-8 w-16" />
+          <Card key={i} className="border-gray-200/80 shadow-sm">
+            <CardContent className="pt-5 pb-4 px-5">
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-7 w-7 rounded-lg" />
+                <div>
+                  <Skeleton className="h-3 w-16 mb-2" />
+                  <Skeleton className="h-7 w-12" />
+                </div>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="grid gap-6">
-        {/* At-Risk Students Card */}
-        <Card className="glass-card animate-fade-in animate-delay-400">
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* At-Risk Students skeleton */}
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2 mb-1">
-              <Skeleton className="h-4 w-4 rounded" />
-              <Skeleton className="h-5 w-40" />
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-4 w-44" />
+              <Skeleton className="h-3 w-20" />
             </div>
-            <Skeleton className="h-4 w-64" />
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {[...Array(5)].map((_, i) => (
                 <div key={i} className="flex items-center justify-between">
                   <div className="space-y-1.5">
                     <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-3 w-48" />
+                    <Skeleton className="h-3 w-40" />
                   </div>
                   <div className="text-right space-y-1.5">
                     <Skeleton className="h-4 w-12" />
@@ -55,23 +54,24 @@ export default function TeacherLoading() {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        <div className="grid sm:grid-cols-3 gap-4 animate-fade-in animate-delay-500">
-          {[...Array(3)].map((_, i) => (
-            <Card key={i} className="glass-card hover-lift">
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <Skeleton className="h-8 w-8 rounded" />
-                  <div className="flex-1 space-y-2">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-3 w-32" />
-                  </div>
-                  <Skeleton className="h-4 w-4 rounded" />
+        {/* Quick Actions skeleton */}
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardHeader className="pb-3">
+            <Skeleton className="h-4 w-28" />
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 rounded-lg border border-gray-200/80">
+                <Skeleton className="h-8 w-8 rounded-lg" />
+                <div className="flex-1 space-y-1.5">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-3 w-40" />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                <Skeleton className="h-4 w-4 rounded" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -40,7 +40,7 @@ export function ExamTypesChart({ examTypeStats, totalExams }: ExamTypesChartProp
           <CardDescription>Number of exams by type</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground py-12 text-center">
+          <p className="text-sm text-gray-400 py-12 text-center">
             No exam data available.
           </p>
         </CardContent>
@@ -66,20 +66,20 @@ export function ExamTypesChart({ examTypeStats, totalExams }: ExamTypesChartProp
 
         {/* Detailed breakdown */}
         <div className="space-y-3">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
             Detailed Breakdown
           </p>
           <div className="space-y-4">
             {validTypes.map((type) => (
               <div key={type.type} className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium text-slate-900">{type.label}</span>
-                  <span className="text-slate-600">
+                  <span className="font-medium text-gray-800">{type.label}</span>
+                  <span className="text-gray-500">
                     {type.count} exam{type.count !== 1 ? "s" : ""} (
                     {((type.count / totalExams) * 100).toFixed(1)}%)
                   </span>
                 </div>
-                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-blue-500 rounded-full transition-all"
                     style={{ width: `${(type.count / totalExams) * 100}%` }}

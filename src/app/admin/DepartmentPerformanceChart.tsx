@@ -29,13 +29,13 @@ export function DepartmentPerformanceChart({ deptStats }: DepartmentPerformanceC
 
   if (chartData.length === 0) {
     return (
-      <Card>
+      <Card className="border-gray-200/80 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Department Performance</CardTitle>
-          <CardDescription>Average scores by department</CardDescription>
+          <CardTitle className="text-sm font-semibold text-gray-800">Department Performance</CardTitle>
+          <CardDescription className="text-xs text-gray-400">Average scores by department</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground py-12 text-center">
+          <p className="text-sm text-gray-400 py-12 text-center">
             No departments configured.
           </p>
         </CardContent>
@@ -44,10 +44,10 @@ export function DepartmentPerformanceChart({ deptStats }: DepartmentPerformanceC
   }
 
   return (
-    <Card>
+    <Card className="border-gray-200/80 shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="text-base">Department Performance</CardTitle>
-        <CardDescription>Comparative analysis across departments</CardDescription>
+        <CardTitle className="text-sm font-semibold text-gray-800">Department Performance</CardTitle>
+        <CardDescription className="text-xs text-gray-400">Comparative analysis across departments</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Bar Chart Visualization */}
@@ -64,15 +64,15 @@ export function DepartmentPerformanceChart({ deptStats }: DepartmentPerformanceC
 
         {/* Detailed breakdown */}
         <div className="space-y-3">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
             Detailed Breakdown
           </p>
           {validDepts.map((d) => (
             <div key={d.id} className="space-y-1.5">
               <div className="flex items-center justify-between text-sm">
                 <div>
-                  <span className="font-medium text-slate-900">{d.name}</span>
-                  <span className="text-muted-foreground ml-2">
+                  <span className="font-medium text-gray-800">{d.name}</span>
+                  <span className="text-gray-400 ml-2">
                     ({d.studentCount} student{d.studentCount !== 1 ? "s" : ""})
                   </span>
                 </div>
@@ -88,7 +88,7 @@ export function DepartmentPerformanceChart({ deptStats }: DepartmentPerformanceC
                   {fmtPct(d.avg)}
                 </span>
               </div>
-              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all ${
                     d.avg >= 60

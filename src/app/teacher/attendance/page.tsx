@@ -214,7 +214,7 @@ export default function TeacherAttendancePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
       </div>
     );
   }
@@ -223,10 +223,10 @@ export default function TeacherAttendancePage() {
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-foreground">
+          <h1 className="text-xl font-semibold text-gray-800">
             Take Attendance
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm text-gray-400 mt-1">
             Select a subject and date, then mark student attendance
           </p>
         </div>
@@ -239,7 +239,7 @@ export default function TeacherAttendancePage() {
       </div>
 
       {/* Filters */}
-      <Card className="glass-card">
+      <Card className="border-gray-200/80 shadow-sm">
         <CardContent className="pt-6">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -279,15 +279,15 @@ export default function TeacherAttendancePage() {
         <>
           {/* Stats bar */}
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-            <Card className="glass-card">
+            <Card className="border-gray-200/80 shadow-sm">
               <CardContent className="py-3 px-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                <p className="text-xs text-gray-400 uppercase tracking-wider">
                   Total
                 </p>
                 <p className="text-lg font-semibold">{students.length}</p>
               </CardContent>
             </Card>
-            <Card className="glass-card">
+            <Card className="border-gray-200/80 shadow-sm">
               <CardContent className="py-3 px-4">
                 <p className="text-xs text-emerald-600 uppercase tracking-wider">
                   Present
@@ -297,7 +297,7 @@ export default function TeacherAttendancePage() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="glass-card">
+            <Card className="border-gray-200/80 shadow-sm">
               <CardContent className="py-3 px-4">
                 <p className="text-xs text-red-600 uppercase tracking-wider">
                   Absent
@@ -307,7 +307,7 @@ export default function TeacherAttendancePage() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="glass-card">
+            <Card className="border-gray-200/80 shadow-sm">
               <CardContent className="py-3 px-4">
                 <p className="text-xs text-amber-600 uppercase tracking-wider">
                   Late
@@ -317,7 +317,7 @@ export default function TeacherAttendancePage() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="glass-card">
+            <Card className="border-gray-200/80 shadow-sm">
               <CardContent className="py-3 px-4">
                 <p className="text-xs text-blue-600 uppercase tracking-wider">
                   Excused
@@ -329,7 +329,7 @@ export default function TeacherAttendancePage() {
             </Card>
           </div>
 
-          <Card className="glass-card">
+          <Card className="border-gray-200/80 shadow-sm">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div>
@@ -377,12 +377,12 @@ export default function TeacherAttendancePage() {
             <CardContent>
               {loadingStudents ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
                 </div>
               ) : students.length === 0 ? (
                 <div className="text-center py-8">
-                  <Users className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">
+                  <Users className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm text-gray-400">
                     No students found for this semester.
                   </p>
                 </div>
@@ -401,7 +401,7 @@ export default function TeacherAttendancePage() {
                       const currentStatus = attendanceMap[s.id];
                       return (
                         <TableRow key={s.id}>
-                          <TableCell className="text-muted-foreground text-xs">
+                          <TableCell className="text-gray-400 text-xs">
                             {idx + 1}
                           </TableCell>
                           <TableCell className="font-mono text-sm">
@@ -427,7 +427,7 @@ export default function TeacherAttendancePage() {
                                       ${
                                         isActive
                                           ? `${config.bgColor} ${config.color} ring-1 ring-current/20 shadow-sm`
-                                          : "text-muted-foreground hover:bg-muted/50"
+                                          : "text-gray-400 hover:bg-gray-50"
                                       }
                                     `}
                                   >

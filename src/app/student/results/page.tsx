@@ -33,8 +33,8 @@ export default async function StudentResultsPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">All Results</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-xl font-semibold text-gray-800">All Results</h1>
+        <p className="text-sm text-gray-400 mt-1">
           Complete record of all your exam results
         </p>
       </div>

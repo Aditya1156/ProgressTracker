@@ -93,7 +93,7 @@ export function isValidExamType(value: string | null | undefined): value is Exam
 /**
  * Validate user role
  */
-export const VALID_ROLES = ["student", "teacher", "hod", "principal"] as const;
+export const VALID_ROLES = ["student", "teacher", "hod", "principal", "class_coordinator", "lab_assistant", "parent"] as const;
 export type UserRole = (typeof VALID_ROLES)[number];
 
 export function isValidRole(value: string | null | undefined): value is UserRole {

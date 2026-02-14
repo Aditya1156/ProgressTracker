@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
-  GraduationCap,
   LayoutDashboard,
   BookOpen,
   Users,
@@ -15,10 +15,10 @@ import {
   LogOut,
   Menu,
   X,
+  UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useState } from "react";
 import type { UserRole } from "@/lib/auth";
 import { PageTransition } from "@/components/motion";
@@ -37,14 +37,18 @@ function getNavItems(role: UserRole): NavItem[] {
         { href: "/student/results", label: "Results", icon: <BookOpen className="h-4 w-4" /> },
         { href: "/student/attendance", label: "Attendance", icon: <CalendarCheck className="h-4 w-4" /> },
         { href: "/student/feedback", label: "Feedback", icon: <MessageSquare className="h-4 w-4" /> },
+        { href: "/student/settings", label: "Settings", icon: <Settings className="h-4 w-4" /> },
       ];
     case "teacher":
+    case "class_coordinator":
+    case "lab_assistant":
       return [
         { href: "/teacher", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
         { href: "/teacher/marks", label: "Enter Marks", icon: <ClipboardList className="h-4 w-4" /> },
         { href: "/teacher/attendance", label: "Attendance", icon: <CalendarCheck className="h-4 w-4" /> },
         { href: "/teacher/students", label: "Students", icon: <Users className="h-4 w-4" /> },
         { href: "/teacher/feedback", label: "Feedback", icon: <MessageSquare className="h-4 w-4" /> },
+        { href: "/teacher/settings", label: "Settings", icon: <Settings className="h-4 w-4" /> },
       ];
     case "hod":
     case "principal":
@@ -54,7 +58,13 @@ function getNavItems(role: UserRole): NavItem[] {
         { href: "/admin/attendance", label: "Attendance", icon: <CalendarCheck className="h-4 w-4" /> },
         { href: "/admin/students", label: "Students", icon: <Users className="h-4 w-4" /> },
         { href: "/admin/exams", label: "Exams", icon: <BookOpen className="h-4 w-4" /> },
-        { href: "/admin/teachers", label: "Teachers", icon: <Settings className="h-4 w-4" /> },
+        { href: "/admin/teachers", label: "Teachers", icon: <UserCog className="h-4 w-4" /> },
+        { href: "/admin/settings", label: "Settings", icon: <Settings className="h-4 w-4" /> },
+      ];
+    case "parent":
+      return [
+        { href: "/parent", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
+        { href: "/parent/settings", label: "Settings", icon: <Settings className="h-4 w-4" /> },
       ];
     default:
       return [];
@@ -81,44 +91,55 @@ export default function AppShell({ children, user }: AppShellProps) {
     .toUpperCase()
     .slice(0, 2);
 
-  const roleBadge =
-    user.role === "principal"
-      ? "Principal"
-      : user.role === "hod"
-      ? "HOD"
-      : user.role === "teacher"
-      ? "Teacher"
-      : "Student";
+  const roleBadgeMap: Record<string, string> = {
+    principal: "Principal",
+    hod: "HOD",
+    teacher: "Teacher",
+    class_coordinator: "Coordinator",
+    lab_assistant: "Lab Assistant",
+    student: "Student",
+    parent: "Parent",
+  };
+  const roleBadge = roleBadgeMap[user.role] ?? "User";
 
   return (
-    <div className="flex h-screen overflow-hidden gradient-mesh">
+    <div className="flex h-screen overflow-hidden bg-[#f8f9fc]">
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-60 glass-sidebar flex flex-col transition-transform duration-300 ease-in-out lg:static lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 w-56 bg-white border-r border-gray-200/80 flex flex-col transition-transform duration-200 ease-in-out lg:static lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Brand */}
-        <div className="flex items-center justify-between h-14 px-4 border-b border-[var(--glass-border)]">
+        <div className="flex items-center justify-between h-14 px-4 border-b border-gray-100">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="rounded-lg bg-primary/10 p-1.5">
-              <GraduationCap className="h-4 w-4 text-primary" />
+            <Image
+              src="/pesitm.png"
+              alt="PESITM"
+              width={30}
+              height={30}
+              className="object-contain"
+            />
+            <div className="leading-tight">
+              <span className="font-bold text-[13px] text-[#0f1b4c] block">
+                PESITM
+              </span>
+              <span className="text-[9px] text-gray-400 uppercase tracking-widest">
+                Progress Tracker
+              </span>
             </div>
-            <span className="font-bold text-sm tracking-tight gradient-text">
-              AcadTrack
-            </span>
           </Link>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-1.5 rounded-lg hover:bg-white/30 dark:hover:bg-white/10 transition-colors"
+            className="lg:hidden p-1 rounded-md hover:bg-gray-100 transition-colors"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4 text-gray-400" />
           </button>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto glass-scrollbar">
+        <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto glass-scrollbar">
           {navItems.map((item) => {
             const active = pathname === item.href;
             return (
@@ -127,51 +148,44 @@ export default function AppShell({ children, user }: AppShellProps) {
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200",
+                  "flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all duration-150",
                   active
-                    ? "bg-primary/10 text-primary font-medium border border-primary/20 shadow-glass-sm"
-                    : "text-muted-foreground hover:bg-white/40 dark:hover:bg-white/5 hover:text-foreground"
+                    ? "bg-[#0f1b4c] text-white font-medium shadow-sm"
+                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
                 )}
               >
-                <span className={cn(
-                  "flex items-center justify-center w-6 h-6 rounded-lg transition-colors",
-                  active ? "text-primary" : ""
-                )}>
+                <span className={cn("flex-shrink-0", active ? "text-white/90" : "text-gray-400")}>
                   {item.icon}
                 </span>
                 {item.label}
-                {active && (
-                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary animate-glow-pulse" />
-                )}
               </Link>
             );
           })}
         </nav>
 
         {/* User section */}
-        <div className="border-t border-[var(--glass-border)] p-4">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-9 w-9 ring-2 ring-primary/20">
-              <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
+        <div className="border-t border-gray-100 p-3">
+          <div className="flex items-center gap-2.5 px-1 mb-2.5">
+            <div className="h-8 w-8 rounded-full bg-[#0f1b4c] flex items-center justify-center flex-shrink-0">
+              <span className="text-[10px] font-medium text-white">
                 {initials}
-              </AvatarFallback>
-            </Avatar>
+              </span>
+            </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate">
+              <p className="text-[13px] font-medium text-gray-800 truncate">
                 {user.fullName}
               </p>
-              <p className="text-xs text-muted-foreground">{roleBadge}</p>
+              <p className="text-[11px] text-gray-400">{roleBadge}</p>
             </div>
           </div>
-          <div className="border-t border-[var(--glass-border)] my-3" />
           <form action="/auth/signout" method="POST">
             <Button
               type="submit"
               variant="ghost"
               size="sm"
-              className="w-full justify-start text-muted-foreground hover:text-destructive"
+              className="w-full justify-start text-gray-400 hover:text-red-600 hover:bg-red-50 h-8 text-xs"
             >
-              <LogOut className="mr-2 h-4 w-4" />
+              <LogOut className="mr-2 h-3.5 w-3.5" />
               Sign out
             </Button>
           </form>
@@ -181,7 +195,7 @@ export default function AppShell({ children, user }: AppShellProps) {
       {/* Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/30 backdrop-blur-sm lg:hidden transition-opacity"
+          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-[2px] lg:hidden transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -189,17 +203,23 @@ export default function AppShell({ children, user }: AppShellProps) {
       {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar (mobile) */}
-        <header className="flex items-center h-14 px-4 glass-strong border-b border-[var(--glass-border)] lg:hidden">
+        <header className="flex items-center h-14 px-4 bg-white border-b border-gray-200/80 lg:hidden">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-lg hover:bg-white/30 dark:hover:bg-white/10 -ml-2 transition-colors"
+            className="p-1.5 rounded-md hover:bg-gray-100 -ml-1 transition-colors"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-5 w-5 text-gray-600" />
           </button>
           <div className="ml-3 flex items-center gap-2">
-            <GraduationCap className="h-4 w-4 text-primary" />
-            <span className="font-bold text-sm gradient-text">
-              AcadTrack
+            <Image
+              src="/pesitm.png"
+              alt="PESITM"
+              width={24}
+              height={24}
+              className="object-contain"
+            />
+            <span className="font-bold text-[13px] text-[#0f1b4c]">
+              PESITM
             </span>
           </div>
         </header>

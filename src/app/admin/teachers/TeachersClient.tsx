@@ -48,8 +48,8 @@ export default function TeachersClient({ teachers }: TeachersClientProps) {
           const email = (row.original.profiles as any)?.email ?? "—";
           return (
             <div className="flex items-center gap-2">
-              <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">{email}</span>
+              <Mail className="h-3.5 w-3.5 text-gray-400" />
+              <span className="text-sm text-gray-400">{email}</span>
             </div>
           );
         },
@@ -63,7 +63,7 @@ export default function TeachersClient({ teachers }: TeachersClientProps) {
           return (
             <div className="flex flex-col">
               <span className="text-sm">{dept?.full_name ?? "—"}</span>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-gray-400">
                 {dept?.name ?? ""}
               </span>
             </div>

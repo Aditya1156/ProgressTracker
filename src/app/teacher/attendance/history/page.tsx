@@ -14,7 +14,7 @@ export default async function TeacherAttendanceHistoryPage() {
 
   if (!teacher) {
     return (
-      <div className="text-center py-12 text-muted-foreground">
+      <div className="text-center py-12 text-gray-400">
         Teacher profile not found.
       </div>
     );

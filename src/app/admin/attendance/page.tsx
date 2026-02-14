@@ -196,17 +196,17 @@ export default async function AdminAttendancePage() {
   return (
     <div className="space-y-6 max-w-7xl">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">
+        <h1 className="text-xl font-semibold text-gray-800">
           Attendance Management
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-gray-400 mt-1">
           Institution-wide attendance overview and reports
         </p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid sm:grid-cols-4 gap-4">
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Overall Attendance
@@ -220,17 +220,17 @@ export default async function AdminAttendancePage() {
                     ? overallRate >= 75
                       ? "text-emerald-600"
                       : "text-red-600"
-                    : "text-foreground"
+                    : "text-gray-800"
                 }`}
               >
                 {totalRecords > 0 ? fmtPct(overallRate) : "—"}
               </span>
-              <CalendarCheck className="h-5 w-5 text-muted-foreground" />
+              <CalendarCheck className="h-5 w-5 text-gray-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Total Records
@@ -238,15 +238,15 @@ export default async function AdminAttendancePage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-semibold text-foreground">
+              <span className="text-2xl font-semibold text-gray-800">
                 {totalRecords}
               </span>
-              <TrendingUp className="h-5 w-5 text-muted-foreground" />
+              <TrendingUp className="h-5 w-5 text-gray-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Students Tracked
@@ -254,15 +254,15 @@ export default async function AdminAttendancePage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-semibold text-foreground">
+              <span className="text-2xl font-semibold text-gray-800">
                 {new Set(records.map((r) => r.student_id)).size}
               </span>
-              <Users className="h-5 w-5 text-muted-foreground" />
+              <Users className="h-5 w-5 text-gray-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Below {ATTENDANCE_THRESHOLD}%
@@ -271,7 +271,7 @@ export default async function AdminAttendancePage() {
           <CardContent>
             <div className="flex items-center justify-between">
               <span
-                className={`text-2xl font-semibold ${lowAttendanceStudentIds.size > 0 ? "text-red-600" : "text-foreground"}`}
+                className={`text-2xl font-semibold ${lowAttendanceStudentIds.size > 0 ? "text-red-600" : "text-gray-800"}`}
               >
                 {lowAttendanceStudentIds.size}
               </span>
@@ -305,7 +305,7 @@ export default async function AdminAttendancePage() {
           </div>
 
           {/* At-risk students */}
-          <Card className="glass-card">
+          <Card className="border-gray-200/80 shadow-sm">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -321,7 +321,7 @@ export default async function AdminAttendancePage() {
             </CardHeader>
             <CardContent>
               {atRiskList.length === 0 ? (
-                <p className="text-sm text-muted-foreground py-4 text-center">
+                <p className="text-sm text-gray-400 py-4 text-center">
                   No students below threshold.
                 </p>
               ) : (
@@ -332,10 +332,10 @@ export default async function AdminAttendancePage() {
                       <div key={`${s.studentId}-${s.subjectCode}-${i}`}>
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-sm font-medium text-foreground">
+                            <p className="text-sm font-medium text-gray-800">
                               {s.name}
                             </p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs text-gray-400">
                               {s.rollNo} &middot; {s.department} &middot;{" "}
                               {s.subjectCode}
                             </p>

@@ -52,7 +52,7 @@ export function PerformanceDistributionChart({
           <CardDescription>Student performance across all exams</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground py-12 text-center">
+          <p className="text-sm text-gray-400 py-12 text-center">
             No performance data available yet.
           </p>
         </CardContent>
@@ -78,18 +78,18 @@ export function PerformanceDistributionChart({
 
         {/* Detailed breakdown */}
         <div className="space-y-3">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
             Detailed Breakdown
           </p>
           <div className="space-y-4">
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium text-emerald-700">Excellent (75%+)</span>
-                <span className="text-slate-600">
+                <span className="text-gray-500">
                   {excellentCount} ({fmtPct((excellentCount / totalCount) * 100)})
                 </span>
               </div>
-              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-emerald-500 rounded-full transition-all"
                   style={{ width: `${(excellentCount / totalCount) * 100}%` }}
@@ -100,11 +100,11 @@ export function PerformanceDistributionChart({
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium text-blue-700">Good (60-74%)</span>
-                <span className="text-slate-600">
+                <span className="text-gray-500">
                   {goodCount} ({fmtPct((goodCount / totalCount) * 100)})
                 </span>
               </div>
-              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-blue-500 rounded-full transition-all"
                   style={{ width: `${(goodCount / totalCount) * 100}%` }}
@@ -115,11 +115,11 @@ export function PerformanceDistributionChart({
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium text-amber-700">Average (40-59%)</span>
-                <span className="text-slate-600">
+                <span className="text-gray-500">
                   {averageCount} ({fmtPct((averageCount / totalCount) * 100)})
                 </span>
               </div>
-              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-amber-500 rounded-full transition-all"
                   style={{ width: `${(averageCount / totalCount) * 100}%` }}
@@ -130,11 +130,11 @@ export function PerformanceDistributionChart({
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium text-red-700">Needs Improvement (&lt;40%)</span>
-                <span className="text-slate-600">
+                <span className="text-gray-500">
                   {poorCount} ({fmtPct((poorCount / totalCount) * 100)})
                 </span>
               </div>
-              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-red-500 rounded-full transition-all"
                   style={{ width: `${(poorCount / totalCount) * 100}%` }}

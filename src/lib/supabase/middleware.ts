@@ -67,9 +67,17 @@ export async function updateSession(request: NextRequest) {
       }
     }
 
-    // Protect /teacher routes - only Teacher, HOD, and Principal
+    // Protect /teacher routes - Teacher, HOD, Principal, Coordinator, Lab Assistant
     if (pathname.startsWith("/teacher")) {
-      if (!["teacher", "hod", "principal"].includes(userRole)) {
+      if (!["teacher", "hod", "principal", "class_coordinator", "lab_assistant"].includes(userRole)) {
+        url.pathname = getDashboardByRole(userRole);
+        return NextResponse.redirect(url);
+      }
+    }
+
+    // Protect /parent routes - only Parents
+    if (pathname.startsWith("/parent")) {
+      if (userRole !== "parent") {
         url.pathname = getDashboardByRole(userRole);
         return NextResponse.redirect(url);
       }
@@ -96,7 +104,11 @@ function getDashboardByRole(role: string): string {
     case "hod":
       return "/admin";
     case "teacher":
+    case "class_coordinator":
+    case "lab_assistant":
       return "/teacher";
+    case "parent":
+      return "/parent";
     case "student":
     default:
       return "/student";

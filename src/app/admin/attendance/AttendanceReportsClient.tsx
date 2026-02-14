@@ -102,7 +102,7 @@ export function AttendanceReportsClient({
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <Card className="glass-card">
+      <Card className="border-gray-200/80 shadow-sm">
         <CardContent className="pt-6">
           <div className="grid sm:grid-cols-4 gap-4">
             <div className="space-y-2">
@@ -144,7 +144,7 @@ export function AttendanceReportsClient({
             <div className="space-y-2">
               <Label>Search</Label>
               <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Roll no, name, subject..."
                   value={searchQuery}
@@ -169,7 +169,7 @@ export function AttendanceReportsClient({
       </Card>
 
       {/* Table */}
-      <Card className="glass-card">
+      <Card className="border-gray-200/80 shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Student Attendance Report</CardTitle>
           <CardDescription>
@@ -178,7 +178,7 @@ export function AttendanceReportsClient({
         </CardHeader>
         <CardContent>
           {filtered.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-8 text-center">
+            <p className="text-sm text-gray-400 py-8 text-center">
               No attendance records found.
             </p>
           ) : (
@@ -205,7 +205,7 @@ export function AttendanceReportsClient({
                           {s.rollNo}
                         </TableCell>
                         <TableCell className="text-sm">{s.name}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
+                        <TableCell className="text-sm text-gray-400">
                           {s.department}
                         </TableCell>
                         <TableCell className="text-sm">
@@ -234,7 +234,7 @@ export function AttendanceReportsClient({
                 </TableBody>
               </Table>
               {filtered.length > 100 && (
-                <p className="text-xs text-muted-foreground text-center py-3">
+                <p className="text-xs text-gray-400 text-center py-3">
                   Showing first 100 of {filtered.length} records. Export to see
                   all.
                 </p>

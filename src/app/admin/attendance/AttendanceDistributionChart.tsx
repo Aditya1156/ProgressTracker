@@ -40,7 +40,7 @@ export function AttendanceDistributionChart({
   ].filter((d) => d.value > 0);
 
   return (
-    <Card className="glass-card">
+    <Card className="border-gray-200/80 shadow-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Status Distribution</CardTitle>
       </CardHeader>

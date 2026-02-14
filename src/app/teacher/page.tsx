@@ -15,6 +15,7 @@ import {
   AlertTriangle,
   ArrowRight,
   CalendarCheck,
+  MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
 import { classifyLearner, fmtPct } from "@/lib/utils";
@@ -33,9 +34,9 @@ export default async function TeacherDashboard() {
   if (!teacher) {
     return (
       <div className="space-y-4">
-        <h1 className="text-xl font-semibold text-foreground">Welcome, {user.fullName}</h1>
-        <Card className="glass-card">
-          <CardContent className="py-12 text-center text-muted-foreground">
+        <h1 className="text-xl font-semibold text-gray-800">Welcome, {user.fullName}</h1>
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="py-12 text-center text-gray-400">
             <p>Your teacher profile hasn&apos;t been set up yet.</p>
             <p className="text-sm mt-1">Please contact the HOD or administrator.</p>
           </CardContent>
@@ -105,73 +106,67 @@ export default async function TeacherDashboard() {
     <div className="space-y-6 max-w-5xl">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-foreground">
+        <h1 className="text-xl font-semibold text-gray-800">
           Welcome, {user.fullName.split(" ")[0]}
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-gray-400 mt-1">
           {teacher.designation} &middot; {deptName} Department
         </p>
       </div>
 
       {/* Summary cards */}
       <div className="grid sm:grid-cols-4 gap-4">
-        <Card className="glass-card">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              Students
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-muted-foreground" />
-              <span className="text-2xl font-semibold text-foreground">
-                {totalStudents}
-              </span>
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="pt-5 pb-4 px-5">
+            <div className="flex items-center gap-3">
+              <div className="h-7 w-7 rounded-lg bg-blue-50 flex items-center justify-center">
+                <Users className="h-3.5 w-3.5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider">Students</p>
+                <p className="text-2xl font-semibold text-gray-800">{totalStudents}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="glass-card">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              Subjects
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-muted-foreground" />
-              <span className="text-2xl font-semibold text-foreground">
-                {totalSubjects}
-              </span>
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="pt-5 pb-4 px-5">
+            <div className="flex items-center gap-3">
+              <div className="h-7 w-7 rounded-lg bg-indigo-50 flex items-center justify-center">
+                <BookOpen className="h-3.5 w-3.5 text-indigo-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider">Subjects</p>
+                <p className="text-2xl font-semibold text-gray-800">{totalSubjects}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="glass-card">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              Exams Created
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <ClipboardList className="h-4 w-4 text-muted-foreground" />
-              <span className="text-2xl font-semibold text-foreground">
-                {totalExams}
-              </span>
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="pt-5 pb-4 px-5">
+            <div className="flex items-center gap-3">
+              <div className="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
+                <ClipboardList className="h-3.5 w-3.5 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider">Exams Created</p>
+                <p className="text-2xl font-semibold text-gray-800">{totalExams}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="glass-card">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              At Risk
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
-              <span className="text-2xl font-semibold text-amber-600">
-                {atRiskStudents.length}
-              </span>
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="pt-5 pb-4 px-5">
+            <div className="flex items-center gap-3">
+              <div className="h-7 w-7 rounded-lg bg-amber-50 flex items-center justify-center">
+                <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider">At Risk</p>
+                <p className={`text-2xl font-semibold ${atRiskStudents.length > 0 ? "text-amber-600" : "text-gray-800"}`}>
+                  {atRiskStudents.length}
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -179,13 +174,13 @@ export default async function TeacherDashboard() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* At-Risk Students */}
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Students Needing Attention</CardTitle>
+              <CardTitle className="text-sm font-semibold text-gray-800">Students Needing Attention</CardTitle>
               <Link
                 href="/teacher/students"
-                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors"
               >
                 All students <ArrowRight className="h-3 w-3" />
               </Link>
@@ -193,7 +188,7 @@ export default async function TeacherDashboard() {
           </CardHeader>
           <CardContent>
             {atRiskStudents.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">
+              <p className="text-sm text-gray-400 py-4 text-center">
                 No at-risk students. Great work!
               </p>
             ) : (
@@ -204,13 +199,13 @@ export default async function TeacherDashboard() {
                   return (
                     <div
                       key={s.id}
-                      className="flex items-center justify-between"
+                      className="flex items-center justify-between py-1"
                     >
                       <div>
-                        <p className="text-sm font-medium text-foreground">
+                        <p className="text-sm font-medium text-gray-800">
                           {profile?.full_name ?? "Student"}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-gray-400">
                           Roll: {s.roll_no} &middot; Sem {s.semester}
                         </p>
                       </div>
@@ -234,49 +229,55 @@ export default async function TeacherDashboard() {
         </Card>
 
         {/* Quick actions */}
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base">Quick Actions</CardTitle>
+            <CardTitle className="text-sm font-semibold text-gray-800">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <Link
               href="/teacher/marks"
-              className="flex items-center gap-3 p-3 rounded-lg border border-[var(--glass-border)] hover:bg-white/30 dark:hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 p-3 rounded-lg border border-gray-200/80 hover:bg-gray-50 transition-colors"
             >
-              <ClipboardList className="h-5 w-5 text-muted-foreground" />
+              <div className="h-8 w-8 rounded-lg bg-[#0f1b4c]/5 flex items-center justify-center">
+                <ClipboardList className="h-4 w-4 text-[#0f1b4c]" />
+              </div>
               <div>
-                <p className="text-sm font-medium text-foreground">Enter Marks</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm font-medium text-gray-800">Enter Marks</p>
+                <p className="text-xs text-gray-400">
                   Record exam scores for your students
                 </p>
               </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground ml-auto" />
+              <ArrowRight className="h-4 w-4 text-gray-300 ml-auto" />
             </Link>
             <Link
               href="/teacher/attendance"
-              className="flex items-center gap-3 p-3 rounded-lg border border-[var(--glass-border)] hover:bg-white/30 dark:hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 p-3 rounded-lg border border-gray-200/80 hover:bg-gray-50 transition-colors"
             >
-              <CalendarCheck className="h-5 w-5 text-muted-foreground" />
+              <div className="h-8 w-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                <CalendarCheck className="h-4 w-4 text-emerald-600" />
+              </div>
               <div>
-                <p className="text-sm font-medium text-foreground">Take Attendance</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm font-medium text-gray-800">Take Attendance</p>
+                <p className="text-xs text-gray-400">
                   Mark attendance for your classes
                 </p>
               </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground ml-auto" />
+              <ArrowRight className="h-4 w-4 text-gray-300 ml-auto" />
             </Link>
             <Link
               href="/teacher/feedback"
-              className="flex items-center gap-3 p-3 rounded-lg border border-[var(--glass-border)] hover:bg-white/30 dark:hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 p-3 rounded-lg border border-gray-200/80 hover:bg-gray-50 transition-colors"
             >
-              <Users className="h-5 w-5 text-muted-foreground" />
+              <div className="h-8 w-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                <MessageSquare className="h-4 w-4 text-blue-600" />
+              </div>
               <div>
-                <p className="text-sm font-medium text-foreground">Give Feedback</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm font-medium text-gray-800">Give Feedback</p>
+                <p className="text-xs text-gray-400">
                   Send personalized feedback to students
                 </p>
               </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground ml-auto" />
+              <ArrowRight className="h-4 w-4 text-gray-300 ml-auto" />
             </Link>
           </CardContent>
         </Card>

@@ -38,12 +38,11 @@ export const chartDefaults = {
 
 export const tooltipStyles = {
   contentStyle: {
-    background: "rgba(255,255,255,0.8)",
-    backdropFilter: "blur(16px) saturate(1.8)",
-    border: "1px solid rgba(255,255,255,0.25)",
-    borderRadius: "12px",
-    padding: "12px 16px",
-    boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    borderRadius: "8px",
+    padding: "10px 14px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
   },
   labelStyle: {
     color: "hsl(var(--foreground))",

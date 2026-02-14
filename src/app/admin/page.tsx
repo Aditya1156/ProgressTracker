@@ -105,91 +105,85 @@ export default async function AdminDashboard() {
     <div className="space-y-6 max-w-5xl">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-foreground">
+        <h1 className="text-xl font-semibold text-gray-800">
           {user.role === "principal" ? "Principal" : "HOD"} Dashboard
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-gray-400 mt-1">
           Institution-wide academic overview
         </p>
       </div>
 
       {/* Summary cards */}
       <div className="grid sm:grid-cols-5 gap-4">
-        <Card className="glass-card">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              Students
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <GraduationCap className="h-4 w-4 text-muted-foreground" />
-              <span className="text-2xl font-semibold text-foreground">
-                {totalStudents ?? 0}
-              </span>
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="pt-5 pb-4 px-5">
+            <div className="flex items-center gap-3">
+              <div className="h-7 w-7 rounded-lg bg-[#0f1b4c]/5 flex items-center justify-center">
+                <GraduationCap className="h-3.5 w-3.5 text-[#0f1b4c]" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider">Students</p>
+                <p className="text-2xl font-semibold text-gray-800">{totalStudents ?? 0}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="glass-card">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              Teachers
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-muted-foreground" />
-              <span className="text-2xl font-semibold text-foreground">
-                {totalTeachers ?? 0}
-              </span>
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="pt-5 pb-4 px-5">
+            <div className="flex items-center gap-3">
+              <div className="h-7 w-7 rounded-lg bg-blue-50 flex items-center justify-center">
+                <Users className="h-3.5 w-3.5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider">Teachers</p>
+                <p className="text-2xl font-semibold text-gray-800">{totalTeachers ?? 0}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="glass-card">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              Exams
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-muted-foreground" />
-              <span className="text-2xl font-semibold text-foreground">
-                {totalExams ?? 0}
-              </span>
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="pt-5 pb-4 px-5">
+            <div className="flex items-center gap-3">
+              <div className="h-7 w-7 rounded-lg bg-indigo-50 flex items-center justify-center">
+                <BookOpen className="h-3.5 w-3.5 text-indigo-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider">Exams</p>
+                <p className="text-2xl font-semibold text-gray-800">{totalExams ?? 0}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="glass-card">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              Overall Average
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-emerald-500" />
-              <span className="text-2xl font-semibold text-foreground">
-                {allPcts.length > 0 ? fmtPct(overallAvg) : "\u2014"}
-              </span>
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="pt-5 pb-4 px-5">
+            <div className="flex items-center gap-3">
+              <div className="h-7 w-7 rounded-lg bg-emerald-50 flex items-center justify-center">
+                <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider">Average</p>
+                <p className="text-2xl font-semibold text-gray-800">
+                  {allPcts.length > 0 ? fmtPct(overallAvg) : "\u2014"}
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="glass-card">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-xs uppercase tracking-wider">
-              Attendance Rate
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <CalendarCheck className={`h-4 w-4 ${attendanceRate >= 75 ? "text-emerald-500" : attendanceRate >= 0 ? "text-amber-500" : "text-muted-foreground"}`} />
-              <span className={`text-2xl font-semibold ${attendanceRate >= 75 ? "text-emerald-600" : attendanceRate >= 0 ? "text-amber-600" : "text-foreground"}`}>
-                {attendanceRate >= 0 ? fmtPct(attendanceRate) : "\u2014"}
-              </span>
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="pt-5 pb-4 px-5">
+            <div className="flex items-center gap-3">
+              <div className={`h-7 w-7 rounded-lg flex items-center justify-center ${attendanceRate >= 75 ? "bg-emerald-50" : attendanceRate >= 0 ? "bg-amber-50" : "bg-gray-50"}`}>
+                <CalendarCheck className={`h-3.5 w-3.5 ${attendanceRate >= 75 ? "text-emerald-600" : attendanceRate >= 0 ? "text-amber-600" : "text-gray-400"}`} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider">Attendance</p>
+                <p className={`text-2xl font-semibold ${attendanceRate >= 75 ? "text-emerald-600" : attendanceRate >= 0 ? "text-amber-600" : "text-gray-800"}`}>
+                  {attendanceRate >= 0 ? fmtPct(attendanceRate) : "\u2014"}
+                </p>
+              </div>
             </div>
             {attendanceRate >= 0 && (
-              <Link href="/admin/attendance" className="text-xs text-muted-foreground hover:text-foreground mt-1 inline-flex items-center gap-1">
+              <Link href="/admin/attendance" className="text-xs text-gray-400 hover:text-gray-600 mt-2 inline-flex items-center gap-1 transition-colors">
                 View details <ArrowRight className="h-3 w-3" />
               </Link>
             )}
@@ -199,30 +193,30 @@ export default async function AdminDashboard() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Department Performance */}
-        <div className="animate-fade-in animate-delay-400">
-          <DepartmentPerformanceChart deptStats={deptStats} />
-        </div>
+        <DepartmentPerformanceChart deptStats={deptStats} />
 
         {/* At-Risk Students */}
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
-                <CardTitle className="text-base">At-Risk Students</CardTitle>
+                <div className="h-5 w-5 rounded bg-amber-50 flex items-center justify-center">
+                  <AlertTriangle className="h-3 w-3 text-amber-600" />
+                </div>
+                <CardTitle className="text-sm font-semibold text-gray-800">At-Risk Students</CardTitle>
               </div>
               <Link
                 href="/admin/students"
-                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors"
               >
                 View all <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-            <CardDescription>Students with average below 50%</CardDescription>
+            <CardDescription className="text-xs text-gray-400">Students with average below 50%</CardDescription>
           </CardHeader>
           <CardContent>
             {atRiskList.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">
+              <p className="text-sm text-gray-400 py-4 text-center">
                 No at-risk students detected.
               </p>
             ) : (
@@ -237,10 +231,10 @@ export default async function AdminDashboard() {
                     <div key={s.id}>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-medium text-foreground">
+                          <p className="text-sm font-medium text-gray-800">
                             {profile?.full_name ?? "Student"}
                           </p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-xs text-gray-400">
                             {s.roll_no} &middot; {dept?.name ?? ""} &middot; Sem{" "}
                             {s.semester}
                           </p>

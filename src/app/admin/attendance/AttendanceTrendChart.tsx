@@ -34,7 +34,7 @@ export function AttendanceTrendChart({ data }: { data: TrendDataPoint[] }) {
   if (data.length === 0) return null;
 
   return (
-    <Card className="glass-card">
+    <Card className="border-gray-200/80 shadow-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Attendance Trend (Weekly)</CardTitle>
       </CardHeader>

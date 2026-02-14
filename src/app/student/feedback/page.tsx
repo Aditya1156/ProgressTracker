@@ -50,22 +50,22 @@ export default async function StudentFeedbackPage() {
     appreciation: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
     improvement: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
     concern: "bg-red-500/10 text-red-700 dark:text-red-400",
-    general: "bg-white/40 dark:bg-white/5 text-foreground/80",
+    general: "bg-gray-100 text-gray-800/80",
   };
 
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">Feedback</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-xl font-semibold text-gray-800">Feedback</h1>
+        <p className="text-sm text-gray-400 mt-1">
           Feedback from your teachers
         </p>
       </div>
 
       {allFeedback.length === 0 ? (
-        <Card className="glass-card">
-          <CardContent className="py-12 text-center text-muted-foreground">
-            <MessageSquare className="h-8 w-8 mx-auto mb-3 text-muted-foreground/50" />
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="py-12 text-center text-gray-400">
+            <MessageSquare className="h-8 w-8 mx-auto mb-3 text-gray-400/50" />
             <p>No feedback yet.</p>
           </CardContent>
         </Card>
@@ -75,7 +75,7 @@ export default async function StudentFeedbackPage() {
             const teacher = fb.teachers as any;
             const subject = fb.subjects as any;
             return (
-              <Card key={fb.id} className="glass-card">
+              <Card key={fb.id} className="border-gray-200/80 shadow-sm">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -88,21 +88,21 @@ export default async function StudentFeedbackPage() {
                         {fb.type.charAt(0).toUpperCase() + fb.type.slice(1)}
                       </Badge>
                       {subject && (
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-gray-400">
                           {subject.code}
                         </span>
                       )}
                     </div>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-gray-400">
                       {formatDate(fb.created_at)}
                     </span>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-foreground/80 leading-relaxed">
+                  <p className="text-sm text-gray-800/80 leading-relaxed">
                     {fb.message}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-3">
+                  <p className="text-xs text-gray-400 mt-3">
                     — {teacher?.profiles?.full_name ?? "Teacher"}
                   </p>
                 </CardContent>

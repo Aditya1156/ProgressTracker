@@ -73,8 +73,8 @@ export default async function AdminExamsPage() {
     <div className="space-y-6 max-w-7xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Exams</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <h1 className="text-xl font-semibold text-gray-800">Exams</h1>
+          <p className="text-sm text-gray-400 mt-1">
             Manage exams and view schedules
           </p>
         </div>
@@ -94,7 +94,7 @@ export default async function AdminExamsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <span className="text-2xl font-semibold text-slate-900">
+              <span className="text-2xl font-semibold text-gray-800">
                 {typeExams.length}
               </span>
             </CardContent>
@@ -112,7 +112,7 @@ export default async function AdminExamsPage() {
                 Complete list of scheduled and completed exams
               </CardDescription>
             </div>
-            <Calendar className="h-5 w-5 text-muted-foreground" />
+            <Calendar className="h-5 w-5 text-gray-400" />
           </div>
         </CardHeader>
         <CardContent className="space-y-4">

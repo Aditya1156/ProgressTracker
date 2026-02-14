@@ -36,7 +36,7 @@ export function SubjectAttendanceChart({
   if (data.length === 0) return null;
 
   return (
-    <Card className="glass-card">
+    <Card className="border-gray-200/80 shadow-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Subject-wise Attendance</CardTitle>
       </CardHeader>

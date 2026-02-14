@@ -33,9 +33,9 @@ export default async function StudentAttendancePage() {
   if (!student) {
     return (
       <div className="space-y-4">
-        <h1 className="text-xl font-semibold text-foreground">Attendance</h1>
-        <Card className="glass-card">
-          <CardContent className="py-12 text-center text-muted-foreground">
+        <h1 className="text-xl font-semibold text-gray-800">Attendance</h1>
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="py-12 text-center text-gray-400">
             <p>Your student profile hasn&apos;t been set up yet.</p>
             <p className="text-sm mt-1">
               Please contact your department administrator.
@@ -125,15 +125,15 @@ export default async function StudentAttendancePage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">Attendance</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-xl font-semibold text-gray-800">Attendance</h1>
+        <p className="text-sm text-gray-400 mt-1">
           Your attendance records and subject-wise breakdown
         </p>
       </div>
 
       {/* Summary cards */}
       <div className="grid sm:grid-cols-4 gap-4">
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Overall Attendance
@@ -142,7 +142,7 @@ export default async function StudentAttendancePage() {
           <CardContent>
             <div className="flex items-baseline gap-2">
               <span
-                className={`text-2xl font-semibold ${allRecords.length > 0 ? overallCategory.color : "text-foreground"}`}
+                className={`text-2xl font-semibold ${allRecords.length > 0 ? overallCategory.color : "text-gray-800"}`}
               >
                 {allRecords.length > 0 ? fmtPct(overallPct) : "—"}
               </span>
@@ -158,7 +158,7 @@ export default async function StudentAttendancePage() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Total Classes
@@ -166,15 +166,15 @@ export default async function StudentAttendancePage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <CalendarCheck className="h-4 w-4 text-muted-foreground" />
-              <span className="text-2xl font-semibold text-foreground">
+              <CalendarCheck className="h-4 w-4 text-gray-400" />
+              <span className="text-2xl font-semibold text-gray-800">
                 {allRecords.length}
               </span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Classes Attended
@@ -190,7 +190,7 @@ export default async function StudentAttendancePage() {
           </CardContent>
         </Card>
 
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
               Below {ATTENDANCE_THRESHOLD}%
@@ -200,11 +200,11 @@ export default async function StudentAttendancePage() {
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-red-500" />
               <span
-                className={`text-2xl font-semibold ${belowThresholdCount > 0 ? "text-red-600" : "text-foreground"}`}
+                className={`text-2xl font-semibold ${belowThresholdCount > 0 ? "text-red-600" : "text-gray-800"}`}
               >
                 {belowThresholdCount}
               </span>
-              <span className="text-xs text-muted-foreground">subject(s)</span>
+              <span className="text-xs text-gray-400">subject(s)</span>
             </div>
           </CardContent>
         </Card>
@@ -212,11 +212,11 @@ export default async function StudentAttendancePage() {
 
       {/* Threshold warning */}
       {allRecords.length > 0 && overallPct < ATTENDANCE_THRESHOLD && (
-        <Card className="glass-card border-red-500/20 bg-red-500/10">
+        <Card className="border-gray-200/80 shadow-sm border-red-500/20 bg-red-500/10">
           <CardContent className="py-4">
             <div className="flex items-center gap-3">
               <div className="h-2 w-2 rounded-full bg-red-500" />
-              <p className="text-sm text-foreground/80">
+              <p className="text-sm text-gray-800/80">
                 Your overall attendance ({fmtPct(overallPct)}) is below the
                 minimum {ATTENDANCE_THRESHOLD}% threshold. You may be ineligible
                 to sit for exams.
@@ -228,7 +228,7 @@ export default async function StudentAttendancePage() {
 
       {/* Subject-wise breakdown */}
       {subjectSummaries.length > 0 && (
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Subject-wise Breakdown</CardTitle>
             <CardDescription>
@@ -243,12 +243,12 @@ export default async function StudentAttendancePage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-sm font-medium">{s.code}</span>
-                      <span className="text-xs text-muted-foreground ml-2">
+                      <span className="text-xs text-gray-400 ml-2">
                         {s.name}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-gray-400">
                         {s.counts.present + s.counts.late}/{s.total}
                       </span>
                       <Badge
@@ -263,7 +263,7 @@ export default async function StudentAttendancePage() {
                     value={s.percentage}
                     className="h-2"
                   />
-                  <div className="flex gap-4 text-xs text-muted-foreground">
+                  <div className="flex gap-4 text-xs text-gray-400">
                     <span>
                       <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1" />
                       Present: {s.counts.present}

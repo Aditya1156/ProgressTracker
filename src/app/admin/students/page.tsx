@@ -49,8 +49,8 @@ export default async function AdminStudentsPage() {
     <div className="space-y-6 max-w-7xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Students</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <h1 className="text-xl font-semibold text-gray-800">Students</h1>
+          <p className="text-sm text-gray-400 mt-1">
             Manage student records and view performance
           </p>
         </div>

@@ -93,8 +93,8 @@ export default async function AdminTeachersPage() {
     <div className="space-y-6 max-w-7xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Teachers</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <h1 className="text-xl font-semibold text-gray-800">Teachers</h1>
+          <p className="text-sm text-gray-400 mt-1">
             Manage faculty members and their assignments
           </p>
         </div>
@@ -113,7 +113,7 @@ export default async function AdminTeachersPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <span className="text-2xl font-semibold text-slate-900">
+            <span className="text-2xl font-semibold text-gray-800">
               {teachers?.length ?? 0}
             </span>
           </CardContent>
@@ -125,7 +125,7 @@ export default async function AdminTeachersPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <span className="text-2xl font-semibold text-slate-900">
+            <span className="text-2xl font-semibold text-gray-800">
               {totalExams}
             </span>
           </CardContent>
@@ -137,7 +137,7 @@ export default async function AdminTeachersPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <span className="text-2xl font-semibold text-slate-900">
+            <span className="text-2xl font-semibold text-gray-800">
               {totalFeedback}
             </span>
           </CardContent>
@@ -149,7 +149,7 @@ export default async function AdminTeachersPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <span className="text-2xl font-semibold text-slate-900">
+            <span className="text-2xl font-semibold text-gray-800">
               {designations.length}
             </span>
           </CardContent>

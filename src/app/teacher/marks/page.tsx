@@ -325,7 +325,7 @@ export default function TeacherMarksPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
       </div>
     );
   }
@@ -333,14 +333,14 @@ export default function TeacherMarksPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">Enter Marks</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-xl font-semibold text-gray-800">Enter Marks</h1>
+        <p className="text-sm text-gray-400 mt-1">
           Select a subject and exam, then enter student marks
         </p>
       </div>
 
       {/* Filters */}
-      <Card className="glass-card">
+      <Card className="border-gray-200/80 shadow-sm">
         <CardContent className="pt-6">
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -493,7 +493,7 @@ export default function TeacherMarksPage() {
 
       {/* Marks entry table */}
       {selectedExam && (
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div>
@@ -513,7 +513,7 @@ export default function TeacherMarksPage() {
           </CardHeader>
           <CardContent>
             {students.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">
+              <p className="text-sm text-gray-400 py-4 text-center">
                 No students found for this semester.
               </p>
             ) : (

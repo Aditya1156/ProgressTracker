@@ -27,8 +27,8 @@ export default async function TeacherStudentsPage() {
 
   if (!teacher) {
     return (
-      <Card className="glass-card">
-        <CardContent className="py-12 text-center text-muted-foreground">
+      <Card className="border-gray-200/80 shadow-sm">
+        <CardContent className="py-12 text-center text-gray-400">
           Teacher profile not found.
         </CardContent>
       </Card>
@@ -66,16 +66,16 @@ export default async function TeacherStudentsPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">Students</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-xl font-semibold text-gray-800">Students</h1>
+        <p className="text-sm text-gray-400 mt-1">
           {deptName} Department &middot; {studentStats.length} students
         </p>
       </div>
 
-      <Card className="glass-card">
+      <Card className="border-gray-200/80 shadow-sm">
         <CardContent className="pt-6">
           {studentStats.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-8 text-center">
+            <p className="text-sm text-gray-400 py-8 text-center">
               No students in your department yet.
             </p>
           ) : (
@@ -116,7 +116,7 @@ export default async function TeacherStudentsPage() {
                             {cat.label}
                           </Badge>
                         ) : (
-                          <span className="text-xs text-muted-foreground">N/A</span>
+                          <span className="text-xs text-gray-400">N/A</span>
                         )}
                       </TableCell>
                     </TableRow>

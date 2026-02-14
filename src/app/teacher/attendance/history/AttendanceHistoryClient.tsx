@@ -127,10 +127,10 @@ export function AttendanceHistoryClient({
             </Button>
           </Link>
           <div>
-            <h1 className="text-xl font-semibold text-foreground">
+            <h1 className="text-xl font-semibold text-gray-800">
               Attendance History
             </h1>
-            <p className="text-sm text-muted-foreground mt-0.5">
+            <p className="text-sm text-gray-400 mt-0.5">
               View and export past attendance records
             </p>
           </div>
@@ -142,7 +142,7 @@ export function AttendanceHistoryClient({
       </div>
 
       {/* Filters */}
-      <Card className="glass-card">
+      <Card className="border-gray-200/80 shadow-sm">
         <CardContent className="pt-6">
           <div className="grid sm:grid-cols-4 gap-4">
             <div className="space-y-2">
@@ -180,7 +180,7 @@ export function AttendanceHistoryClient({
             <div className="space-y-2">
               <Label>Search</Label>
               <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Search subject..."
                   value={searchQuery}
@@ -195,25 +195,25 @@ export function AttendanceHistoryClient({
 
       {/* Summary */}
       <div className="grid sm:grid-cols-3 gap-4">
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardContent className="py-3 px-4">
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">
+            <p className="text-xs text-gray-400 uppercase tracking-wider">
               Sessions
             </p>
             <p className="text-lg font-semibold">{stats.totalSessions}</p>
           </CardContent>
         </Card>
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardContent className="py-3 px-4">
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">
+            <p className="text-xs text-gray-400 uppercase tracking-wider">
               Total Records
             </p>
             <p className="text-lg font-semibold">{stats.totalRecords}</p>
           </CardContent>
         </Card>
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardContent className="py-3 px-4">
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">
+            <p className="text-xs text-gray-400 uppercase tracking-wider">
               Avg Attendance Rate
             </p>
             <p
@@ -226,7 +226,7 @@ export function AttendanceHistoryClient({
       </div>
 
       {/* Sessions table */}
-      <Card className="glass-card">
+      <Card className="border-gray-200/80 shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Sessions</CardTitle>
           <CardDescription>
@@ -235,7 +235,7 @@ export function AttendanceHistoryClient({
         </CardHeader>
         <CardContent>
           {filteredSessions.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-8 text-center">
+            <p className="text-sm text-gray-400 py-8 text-center">
               No attendance records found.
             </p>
           ) : (
@@ -266,7 +266,7 @@ export function AttendanceHistoryClient({
                         <span className="font-medium text-sm">
                           {s.subjectCode}
                         </span>
-                        <span className="text-muted-foreground text-xs ml-1.5">
+                        <span className="text-gray-400 text-xs ml-1.5">
                           {s.subjectName}
                         </span>
                       </TableCell>

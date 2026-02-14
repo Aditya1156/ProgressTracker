@@ -28,7 +28,7 @@ export function SemestersChart({ semesterStats }: SemestersChartProps) {
           <CardDescription>Performance across semesters</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground py-12 text-center">
+          <p className="text-sm text-gray-400 py-12 text-center">
             No semester data available.
           </p>
         </CardContent>
@@ -59,7 +59,7 @@ export function SemestersChart({ semesterStats }: SemestersChartProps) {
 
         {/* Detailed breakdown */}
         <div className="space-y-3">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
             Detailed Breakdown
           </p>
           <div className="space-y-4">
@@ -67,8 +67,8 @@ export function SemestersChart({ semesterStats }: SemestersChartProps) {
               <div key={sem.semester} className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <div>
-                    <span className="font-medium text-slate-900">Semester {sem.semester}</span>
-                    <span className="text-muted-foreground ml-2">
+                    <span className="font-medium text-gray-800">Semester {sem.semester}</span>
+                    <span className="text-gray-400 ml-2">
                       ({sem.studentCount} student{sem.studentCount !== 1 ? "s" : ""})
                     </span>
                   </div>
@@ -84,7 +84,7 @@ export function SemestersChart({ semesterStats }: SemestersChartProps) {
                     {fmtPct(sem.avg)}
                   </span>
                 </div>
-                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${
                       sem.avg >= 60

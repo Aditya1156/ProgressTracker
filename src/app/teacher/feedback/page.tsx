@@ -133,16 +133,16 @@ export default function TeacherFeedbackPage() {
   }
 
   const typeColors: Record<string, string> = {
-    appreciation: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
-    improvement: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
-    concern: "bg-red-500/10 text-red-700 dark:text-red-400",
-    general: "bg-white/40 dark:bg-white/5 text-foreground/80",
+    appreciation: "bg-emerald-500/10 text-emerald-700",
+    improvement: "bg-blue-500/10 text-blue-700",
+    concern: "bg-red-500/10 text-red-700",
+    general: "bg-gray-50 text-gray-800/80",
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
       </div>
     );
   }
@@ -150,15 +150,15 @@ export default function TeacherFeedbackPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">Feedback</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-xl font-semibold text-gray-800">Feedback</h1>
+        <p className="text-sm text-gray-400 mt-1">
           Send personalized feedback to students
         </p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Compose */}
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Send Feedback</CardTitle>
           </CardHeader>
@@ -237,14 +237,14 @@ export default function TeacherFeedbackPage() {
         </Card>
 
         {/* Recent */}
-        <Card className="glass-card">
+        <Card className="border-gray-200/80 shadow-sm">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Recent Feedback</CardTitle>
             <CardDescription>Your last 10 messages</CardDescription>
           </CardHeader>
           <CardContent>
             {recentFeedback.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">
+              <p className="text-sm text-gray-400 py-4 text-center">
                 No feedback sent yet.
               </p>
             ) : (
@@ -261,15 +261,15 @@ export default function TeacherFeedbackPage() {
                             {fb.type}
                           </Badge>
                           {fb.subjects && (
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-xs text-gray-400">
                               {(fb.subjects as { code: string }).code}
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-foreground/80 line-clamp-2">
+                        <p className="text-sm text-gray-800/80 line-clamp-2">
                           {fb.message}
                         </p>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs text-gray-400 mt-1">
                           To: {(fb.students as { roll_no: string; profiles: { full_name: string } | null } | null)?.profiles?.full_name ?? "Student"} &middot;{" "}
                           {formatDate(fb.created_at)}
                         </p>
