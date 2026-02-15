@@ -12,6 +12,7 @@ import {
   ClipboardList,
   CalendarCheck,
   Settings,
+  Settings2,
   LogOut,
   Menu,
   X,
@@ -44,6 +45,7 @@ function getNavItems(role: UserRole): NavItem[] {
     case "lab_assistant":
       return [
         { href: "/teacher", label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
+        { href: "/teacher/analytics", label: "Analytics", icon: <BarChart3 className="h-4 w-4" /> },
         { href: "/teacher/marks", label: "Enter Marks", icon: <ClipboardList className="h-4 w-4" /> },
         { href: "/teacher/attendance", label: "Attendance", icon: <CalendarCheck className="h-4 w-4" /> },
         { href: "/teacher/students", label: "Students", icon: <Users className="h-4 w-4" /> },
@@ -59,6 +61,7 @@ function getNavItems(role: UserRole): NavItem[] {
         { href: "/admin/students", label: "Students", icon: <Users className="h-4 w-4" /> },
         { href: "/admin/exams", label: "Exams", icon: <BookOpen className="h-4 w-4" /> },
         { href: "/admin/teachers", label: "Teachers", icon: <UserCog className="h-4 w-4" /> },
+        { href: "/admin/manage", label: "Manage", icon: <Settings2 className="h-4 w-4" /> },
         { href: "/admin/settings", label: "Settings", icon: <Settings className="h-4 w-4" /> },
       ];
     case "parent":

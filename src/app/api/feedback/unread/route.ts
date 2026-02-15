@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function GET() {
   try {
@@ -84,8 +85,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Student not found" }, { status: 404 });
     }
 
-    // Mark feedback as read
-    const { error } = await supabase
+    // Mark feedback as read (admin client bypasses RLS – student can't UPDATE feedback)
+    const admin = createAdminClient();
+    const { error } = await admin
       .from("feedback")
       .update({ is_read: true })
       .in("id", feedbackIds)

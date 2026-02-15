@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getUser } from "@/lib/auth";
 import {
   Card,
@@ -21,6 +22,7 @@ import {
   GraduationCap,
   MessageSquare,
   Clock,
+  Trophy,
 } from "lucide-react";
 import { classifyLearner, detectTrend, predictRisk, fmtPct, formatDate } from "@/lib/utils";
 import Link from "next/link";
@@ -43,7 +45,7 @@ export default async function StudentDashboard() {
       <div className="space-y-4 max-w-5xl">
         <h1 className="text-lg font-semibold">Welcome, {user.fullName}</h1>
         <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
+          <CardContent className="py-12 text-center text-gray-400">
             <p>Your student profile hasn&apos;t been set up yet.</p>
             <p className="text-sm mt-1">Please contact your department administrator.</p>
           </CardContent>
@@ -56,6 +58,7 @@ export default async function StudentDashboard() {
   const { data: marks } = await supabase
     .from("marks")
     .select(`
+      exam_id,
       marks_obtained,
       created_at,
       exams (
@@ -171,6 +174,60 @@ export default async function StudentDashboard() {
     }))
     .sort((a, b) => b.avg - a.avg);
 
+  // ── Class rank & class average for trend ──
+  const examIds = [...new Set(allMarks.map((m) => m.exam_id))];
+  let rank = -1;
+  let totalStudents = 0;
+  let percentile = 0;
+  let classAvgForTrend: Record<string, number> = {};
+
+  if (examIds.length > 0) {
+    const admin = createAdminClient();
+    const { data: classMarks } = await admin
+      .from("marks")
+      .select("student_id, exam_id, marks_obtained, exams(max_marks)")
+      .in("exam_id", examIds);
+
+    const allClassMarks = classMarks ?? [];
+
+    // Per-exam class average (for trend chart)
+    const examGroups: Record<string, number[]> = {};
+    for (const m of allClassMarks) {
+      const exam = m.exams as any;
+      const maxMarks = exam?.max_marks ?? 0;
+      if (maxMarks > 0) {
+        const pct = (m.marks_obtained / maxMarks) * 100;
+        if (!examGroups[m.exam_id]) examGroups[m.exam_id] = [];
+        examGroups[m.exam_id].push(pct);
+      }
+    }
+    for (const [eid, pcts] of Object.entries(examGroups)) {
+      classAvgForTrend[eid] = pcts.reduce((a, b) => a + b, 0) / pcts.length;
+    }
+
+    // Per-student overall average → rank
+    const studentAvgs: Record<string, { total: number; count: number }> = {};
+    for (const m of allClassMarks) {
+      const exam = m.exams as any;
+      const maxMarks = exam?.max_marks ?? 0;
+      if (maxMarks > 0) {
+        if (!studentAvgs[m.student_id]) studentAvgs[m.student_id] = { total: 0, count: 0 };
+        studentAvgs[m.student_id].total += (m.marks_obtained / maxMarks) * 100;
+        studentAvgs[m.student_id].count += 1;
+      }
+    }
+    const sorted = Object.entries(studentAvgs)
+      .map(([sid, d]) => ({ sid, avg: d.total / d.count }))
+      .sort((a, b) => b.avg - a.avg);
+
+    totalStudents = sorted.length;
+    const pos = sorted.findIndex((s) => s.sid === student.id);
+    rank = pos >= 0 ? pos + 1 : -1;
+    percentile = totalStudents > 0 && rank > 0
+      ? ((totalStudents - rank) / totalStudents) * 100
+      : 0;
+  }
+
   const TrendIcon =
     trend.label === "Improving"
       ? TrendingUp
@@ -199,7 +256,7 @@ export default async function StudentDashboard() {
       </div>
 
       {/* ─── Summary Cards ─── */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
         {/* Average */}
         <Card className="border-gray-200/80 shadow-sm">
           <CardContent className="pt-4 pb-3.5">
@@ -301,6 +358,34 @@ export default async function StudentDashboard() {
               <>
                 <span className="text-2xl font-bold text-gray-900">0</span>
                 <p className="text-[11px] text-gray-400 mt-1.5">All read</p>
+              </>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Rank */}
+        <Card className="border-gray-200/80 shadow-sm">
+          <CardContent className="pt-4 pb-3.5">
+            <div className="flex items-center gap-2 mb-2">
+              <div className={`h-7 w-7 rounded-lg flex items-center justify-center ${
+                rank > 0 && rank <= 10 ? "bg-amber-50" : "bg-gray-50"
+              }`}>
+                <Trophy className={`h-3.5 w-3.5 ${
+                  rank > 0 && rank <= 10 ? "text-amber-500" : "text-gray-400"
+                }`} />
+              </div>
+              <span className="text-[11px] text-gray-400 uppercase tracking-wider">Rank</span>
+            </div>
+            {rank > 0 ? (
+              <>
+                <span className="text-2xl font-bold text-gray-900">#{rank}</span>
+                <span className="text-sm text-gray-400 ml-1">/ {totalStudents}</span>
+                <p className="text-[11px] text-gray-400 mt-1.5">Top {fmtPct(percentile)}</p>
+              </>
+            ) : (
+              <>
+                <span className="text-2xl font-bold text-gray-900">&mdash;</span>
+                <p className="text-[11px] text-gray-400 mt-1.5">No data</p>
               </>
             )}
           </CardContent>
@@ -419,7 +504,7 @@ export default async function StudentDashboard() {
 
       {/* ─── Performance Trend Chart ─── */}
       {allMarks.length > 0 && (
-        <PerformanceTrendChart marks={allMarks} />
+        <PerformanceTrendChart marks={allMarks} classAvgMap={classAvgForTrend} />
       )}
 
       {/* ─── Exam Type Performance + Recent Results ─── */}

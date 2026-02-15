@@ -193,7 +193,7 @@ export default function SystemSettings() {
                 <Input id="inst_website" {...instForm.register("website")} placeholder="https://" />
               </div>
             </div>
-            <Button type="submit" disabled={savingInst} className="btn-ripple">
+            <Button type="submit" disabled={savingInst}>
               {savingInst ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
               Save Institution
             </Button>
@@ -234,7 +234,7 @@ export default function SystemSettings() {
                 <Input id="acad_end" type="date" {...acadForm.register("end_date")} className={acadForm.formState.errors.end_date ? "border-red-500" : ""} />
               </div>
             </div>
-            <Button type="submit" disabled={savingAcad} className="btn-ripple">
+            <Button type="submit" disabled={savingAcad}>
               {savingAcad ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
               Save Academic Year
             </Button>
@@ -291,8 +291,7 @@ export default function SystemSettings() {
           <Button
             onClick={() => saveSetting("grading", { thresholds: gradeThresholds, pass_mark: passMark }, setSavingGrade)}
             disabled={savingGrade}
-            className="btn-ripple"
-          >
+                     >
             {savingGrade ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
             Save Grading
           </Button>
@@ -340,8 +339,7 @@ export default function SystemSettings() {
               )
             }
             disabled={savingAtt}
-            className="btn-ripple"
-          >
+                     >
             {savingAtt ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
             Save Attendance
           </Button>

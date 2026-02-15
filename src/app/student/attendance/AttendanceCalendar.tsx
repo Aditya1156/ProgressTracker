@@ -159,12 +159,12 @@ export function AttendanceCalendar({
                 key={dateStr}
                 className={`
                   h-10 rounded-lg flex flex-col items-center justify-center gap-0.5 text-xs transition-colors
-                  ${isToday ? "ring-1 ring-primary/40 bg-primary/5" : ""}
-                  ${dayRecords.length > 0 ? "bg-muted/30" : ""}
+                  ${isToday ? "ring-1 ring-[#0f1b4c]/30 bg-[#0f1b4c]/5" : ""}
+                  ${dayRecords.length > 0 ? "bg-gray-50" : ""}
                 `}
               >
                 <span
-                  className={`text-xs ${isToday ? "font-semibold text-primary" : "text-gray-400"}`}
+                  className={`text-xs ${isToday ? "font-semibold text-[#0f1b4c]" : "text-gray-400"}`}
                 >
                   {day}
                 </span>

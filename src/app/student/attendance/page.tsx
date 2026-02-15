@@ -212,11 +212,11 @@ export default async function StudentAttendancePage() {
 
       {/* Threshold warning */}
       {allRecords.length > 0 && overallPct < ATTENDANCE_THRESHOLD && (
-        <Card className="border-gray-200/80 shadow-sm border-red-500/20 bg-red-500/10">
+        <Card className="border-gray-200/80 shadow-sm border-red-200 bg-red-50">
           <CardContent className="py-4">
             <div className="flex items-center gap-3">
               <div className="h-2 w-2 rounded-full bg-red-500" />
-              <p className="text-sm text-gray-800/80">
+              <p className="text-sm text-gray-700">
                 Your overall attendance ({fmtPct(overallPct)}) is below the
                 minimum {ATTENDANCE_THRESHOLD}% threshold. You may be ineligible
                 to sit for exams.

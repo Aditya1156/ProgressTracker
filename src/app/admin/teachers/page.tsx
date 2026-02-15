@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Settings2 } from "lucide-react";
+import Link from "next/link";
 import TeachersClient from "./TeachersClient";
 
 export default async function AdminTeachersPage() {
@@ -61,6 +62,19 @@ export default async function AdminTeachersPage() {
     );
   });
 
+  // Count subject assignments per teacher
+  const { data: assignmentCounts } = await supabase
+    .from("teacher_subject_assignments")
+    .select("teacher_id");
+
+  const assignmentCountMap = new Map<string, number>();
+  (assignmentCounts ?? []).forEach((a) => {
+    assignmentCountMap.set(
+      a.teacher_id,
+      (assignmentCountMap.get(a.teacher_id) ?? 0) + 1
+    );
+  });
+
   // Enrich teachers with counts
   const teachersWithCounts = (teachers ?? []).map((teacher) => {
     const profile = teacher.profiles as any;
@@ -69,11 +83,13 @@ export default async function AdminTeachersPage() {
       ? examCountMap.get(teacherProfileId) ?? 0
       : 0;
     const feedbackCount = feedbackCountMap.get(teacher.id) ?? 0;
+    const assignmentsCount = assignmentCountMap.get(teacher.id) ?? 0;
 
     return {
       ...teacher,
       examsCount,
       feedbackCount,
+      assignmentsCount,
     };
   });
 
@@ -88,6 +104,10 @@ export default async function AdminTeachersPage() {
     (a, b) => a + b,
     0
   );
+  const totalAssignments = Array.from(assignmentCountMap.values()).reduce(
+    (a, b) => a + b,
+    0
+  );
 
   return (
     <div className="space-y-6 max-w-7xl">
@@ -98,10 +118,14 @@ export default async function AdminTeachersPage() {
             Manage faculty members and their assignments
           </p>
         </div>
-        <Button size="sm">
-          <UserPlus className="h-4 w-4 mr-2" />
-          Add Teacher
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link href="/admin/manage">
+            <Button variant="outline" size="sm">
+              <Settings2 className="h-4 w-4 mr-2" />
+              Manage Assignments
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Summary */}
@@ -145,12 +169,12 @@ export default async function AdminTeachersPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription className="text-xs uppercase tracking-wider">
-              Designations
+              Assignments
             </CardDescription>
           </CardHeader>
           <CardContent>
             <span className="text-2xl font-semibold text-gray-800">
-              {designations.length}
+              {totalAssignments}
             </span>
           </CardContent>
         </Card>
@@ -189,17 +213,6 @@ export default async function AdminTeachersPage() {
               );
             })}
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Note */}
-      <Card className="bg-blue-50 border-blue-200">
-        <CardContent className="pt-6">
-          <p className="text-sm text-blue-800">
-            <strong>Note:</strong> To add, edit, or delete teachers, use the Supabase
-            dashboard or create custom admin tools. Teacher management features are
-            coming soon!
-          </p>
         </CardContent>
       </Card>
     </div>

@@ -68,6 +68,7 @@ export default function TeacherAttendancePage() {
   const [loadingStudents, setLoadingStudents] = useState(false);
   const [existingRecords, setExistingRecords] = useState(false);
   const [teacherDeptId, setTeacherDeptId] = useState<string | null>(null);
+  const [assignedSections, setAssignedSections] = useState<Record<string, string[]>>({});
 
   // Load subjects on mount
   useEffect(() => {
@@ -86,14 +87,35 @@ export default function TeacherAttendancePage() {
       if (!teacher) return;
       setTeacherDeptId(teacher.department_id);
 
-      const { data: subs } = await supabase
-        .from("subjects")
-        .select("id, name, code, semester")
-        .eq("department_id", teacher.department_id)
-        .order("semester")
-        .order("code");
+      // Check for explicit subject assignments
+      const { data: assignments } = await supabase
+        .from("teacher_subject_assignments")
+        .select("subject_id, section")
+        .eq("teacher_id", teacher.id);
 
-      setSubjects(subs ?? []);
+      let subs: Array<{ id: string; name: string; code: string; semester: number }> = [];
+      if (assignments && assignments.length > 0) {
+        const subjectIds = [...new Set(assignments.map((a) => a.subject_id))];
+        const { data } = await supabase
+          .from("subjects")
+          .select("id, name, code, semester")
+          .in("id", subjectIds)
+          .order("semester")
+          .order("code");
+        subs = (data ?? []) as typeof subs;
+
+        const sectionMap: Record<string, string[]> = {};
+        for (const a of assignments) {
+          if (!sectionMap[a.subject_id]) sectionMap[a.subject_id] = [];
+          if (!sectionMap[a.subject_id].includes(a.section)) {
+            sectionMap[a.subject_id].push(a.section);
+          }
+        }
+        setAssignedSections(sectionMap);
+      }
+      // No fallback: teachers only see assigned subjects
+
+      setSubjects(subs);
       setLoading(false);
     }
     load();
@@ -106,17 +128,24 @@ export default function TeacherAttendancePage() {
       if (!subject || !teacherDeptId) return;
 
       setLoadingStudents(true);
-      const { data } = await supabase
+
+      let query = supabase
         .from("students")
         .select("id, roll_no, semester, profiles(full_name)")
         .eq("department_id", teacherDeptId)
-        .eq("semester", subject.semester)
-        .order("roll_no");
+        .eq("semester", subject.semester);
 
+      // Filter by assigned sections if teacher has assignments
+      const sections = assignedSections[subjectId];
+      if (sections && sections.length > 0) {
+        query = query.in("section", sections);
+      }
+
+      const { data } = await query.order("roll_no");
       setStudents((data as any) ?? []);
       setLoadingStudents(false);
     },
-    [subjects, teacherDeptId]
+    [subjects, teacherDeptId, assignedSections]
   );
 
   // Load existing attendance when subject + date change
@@ -364,8 +393,7 @@ export default function TeacherAttendancePage() {
                   <Button
                     onClick={handleSave}
                     disabled={saving || markedCount === 0}
-                    className="btn-ripple"
-                  >
+                                     >
                     {saving && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}

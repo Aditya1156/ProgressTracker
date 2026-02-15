@@ -154,7 +154,7 @@ export default function ExamsClient({ exams }: ExamsClientProps) {
     <div className="space-y-6">
       {/* Export Button */}
       <div className="flex justify-end">
-        <Button onClick={handleExport} variant="outline" size="sm" className="btn-ripple">
+        <Button onClick={handleExport} variant="outline" size="sm">
           <Download className="h-4 w-4 mr-2" />
           Export CSV
         </Button>

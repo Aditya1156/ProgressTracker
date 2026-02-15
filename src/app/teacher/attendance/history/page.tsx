@@ -20,25 +20,40 @@ export default async function TeacherAttendanceHistoryPage() {
     );
   }
 
-  // Get subjects for this department
-  const { data: subjects } = await supabase
-    .from("subjects")
-    .select("id, name, code, semester")
-    .eq("department_id", teacher.department_id)
-    .order("code");
+  // Check for explicit subject assignments
+  const { data: assignments } = await supabase
+    .from("teacher_subject_assignments")
+    .select("subject_id, section")
+    .eq("teacher_id", teacher.id);
 
-  // Get attendance records marked by this teacher (or all in dept for HOD)
-  const { data: attendance } = await supabase
-    .from("attendance")
-    .select(
-      `
-      id, date, status, remarks, subject_id,
-      students(id, roll_no, profiles(full_name)),
-      subjects(id, name, code)
-    `
-    )
-    .order("date", { ascending: false })
-    .limit(2000);
+  let subjects: Array<{ id: string; name: string; code: string; semester: number }> = [];
+  if (assignments && assignments.length > 0) {
+    const assignedSubjectIds = [...new Set(assignments.map((a) => a.subject_id))];
+    const { data } = await supabase
+      .from("subjects")
+      .select("id, name, code, semester")
+      .in("id", assignedSubjectIds)
+      .order("code");
+    subjects = data ?? [];
+  }
+  // No fallback: teachers only see assigned subjects
+
+  // Get attendance records scoped to teacher's subjects
+  const subjectIds = subjects.map((s) => s.id);
+  const { data: attendance } = subjectIds.length > 0
+    ? await supabase
+        .from("attendance")
+        .select(
+          `
+          id, date, status, remarks, subject_id,
+          students(id, roll_no, profiles(full_name)),
+          subjects(id, name, code)
+        `
+        )
+        .in("subject_id", subjectIds)
+        .order("date", { ascending: false })
+        .limit(2000)
+    : { data: [] };
 
   // Group by subject+date for summary view
   const groupMap = new Map<

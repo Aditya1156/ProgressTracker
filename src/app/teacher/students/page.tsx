@@ -4,16 +4,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { classifyLearner, fmtPct } from "@/lib/utils";
+import TeacherStudentsClient from "./TeacherStudentsClient";
 
 export default async function TeacherStudentsPage() {
   const user = await getUser();
@@ -35,14 +26,45 @@ export default async function TeacherStudentsPage() {
     );
   }
 
-  const { data: students } = await supabase
-    .from("students")
-    .select("id, roll_no, semester, profiles(full_name)")
-    .eq("department_id", teacher.department_id)
-    .order("roll_no");
+  // Check for explicit subject assignments
+  const { data: assignments } = await supabase
+    .from("teacher_subject_assignments")
+    .select("subject_id, section, semester")
+    .eq("teacher_id", teacher.id);
 
-  // Get all marks for these students
-  const studentIds = (students ?? []).map((s) => s.id);
+  let students: Array<{ id: string; roll_no: string; semester: number; batch: string; section: string; profiles: unknown }> = [];
+  if (assignments && assignments.length > 0) {
+    // Build semester → sections map
+    const semesterSections = new Map<number, Set<string>>();
+    for (const a of assignments) {
+      const sems = semesterSections.get(a.semester) ?? new Set<string>();
+      sems.add(a.section);
+      semesterSections.set(a.semester, sems);
+    }
+    // Query students for each semester+sections combo
+    const results = await Promise.all(
+      Array.from(semesterSections.entries()).map(([sem, sections]) =>
+        supabase
+          .from("students")
+          .select("id, roll_no, semester, batch, section, profiles(full_name)")
+          .eq("department_id", teacher.department_id)
+          .eq("semester", sem)
+          .in("section", Array.from(sections))
+          .order("roll_no")
+      )
+    );
+    const all = results.flatMap((r) => r.data ?? []) as typeof students;
+    const seen = new Set<string>();
+    students = all.filter((s) => {
+      if (seen.has(s.id)) return false;
+      seen.add(s.id);
+      return true;
+    });
+  }
+  // No fallback: teachers only see assigned students
+
+  // Get marks scoped to assigned subjects' exams
+  const studentIds = students.map((s) => s.id);
   const { data: allMarks } = studentIds.length > 0
     ? await supabase
         .from("marks")
@@ -64,7 +86,7 @@ export default async function TeacherStudentsPage() {
   const deptName = (teacher as any).departments?.name ?? "";
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-5xl">
       <div>
         <h1 className="text-xl font-semibold text-gray-800">Students</h1>
         <p className="text-sm text-gray-400 mt-1">
@@ -72,61 +94,7 @@ export default async function TeacherStudentsPage() {
         </p>
       </div>
 
-      <Card className="border-gray-200/80 shadow-sm">
-        <CardContent className="pt-6">
-          {studentStats.length === 0 ? (
-            <p className="text-sm text-gray-400 py-8 text-center">
-              No students in your department yet.
-            </p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Roll No</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Semester</TableHead>
-                  <TableHead className="text-right">Exams</TableHead>
-                  <TableHead className="text-right">Average</TableHead>
-                  <TableHead className="text-right">Category</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {studentStats.map((s) => {
-                  const profile = s.profiles as any;
-                  const cat = s.avg >= 0 ? classifyLearner(s.avg) : null;
-                  return (
-                    <TableRow key={s.id}>
-                      <TableCell className="font-mono text-sm">
-                        {s.roll_no}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {profile?.full_name ?? "—"}
-                      </TableCell>
-                      <TableCell>Sem {s.semester}</TableCell>
-                      <TableCell className="text-right">{s.examCount}</TableCell>
-                      <TableCell className={`text-right font-medium ${cat?.color ?? ""}`}>
-                        {s.avg >= 0 ? fmtPct(s.avg) : "—"}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {cat ? (
-                          <Badge
-                            variant="secondary"
-                            className={`text-xs border-0 ${cat.bgColor} ${cat.color}`}
-                          >
-                            {cat.label}
-                          </Badge>
-                        ) : (
-                          <span className="text-xs text-gray-400">N/A</span>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+      <TeacherStudentsClient students={studentStats} />
     </div>
   );
 }

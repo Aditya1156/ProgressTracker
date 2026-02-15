@@ -75,28 +75,60 @@ export default function TeacherFeedbackPage() {
       if (!teacher) return;
       setTeacherId(teacher.id);
 
-      const [studentsRes, subjectsRes, feedbackRes] = await Promise.all([
-        supabase
-          .from("students")
-          .select("id, roll_no, semester, profiles(full_name)")
-          .eq("department_id", teacher.department_id)
-          .order("roll_no"),
-        supabase
+      // Check for explicit subject assignments
+      const { data: assignments } = await supabase
+        .from("teacher_subject_assignments")
+        .select("subject_id, section, semester")
+        .eq("teacher_id", teacher.id);
+
+      // Fetch feedback (always — it's teacher's own)
+      const { data: feedbackData } = await supabase
+        .from("feedback")
+        .select("id, type, message, created_at, students(roll_no, profiles(full_name)), subjects(code)")
+        .eq("teacher_id", teacher.id)
+        .order("created_at", { ascending: false })
+        .limit(10);
+      setRecentFeedback((feedbackData as any) ?? []);
+
+      if (assignments && assignments.length > 0) {
+        // Scoped: only assigned subjects
+        const assignedSubjectIds = [...new Set(assignments.map((a: any) => a.subject_id))];
+        const { data: subData } = await supabase
           .from("subjects")
           .select("id, name, code")
-          .eq("department_id", teacher.department_id)
-          .order("code"),
-        supabase
-          .from("feedback")
-          .select("id, type, message, created_at, students(roll_no, profiles(full_name)), subjects(code)")
-          .eq("teacher_id", teacher.id)
-          .order("created_at", { ascending: false })
-          .limit(10),
-      ]);
+          .in("id", assignedSubjectIds)
+          .order("code");
+        setSubjects(subData as any ?? []);
 
-      setStudents(studentsRes.data as any ?? []);
-      setSubjects(subjectsRes.data as any ?? []);
-      setRecentFeedback((feedbackRes.data as any) ?? []);
+        // Build semester → sections map
+        const semesterSections = new Map<number, Set<string>>();
+        for (const a of assignments) {
+          const sems = semesterSections.get(a.semester) ?? new Set<string>();
+          sems.add(a.section);
+          semesterSections.set(a.semester, sems);
+        }
+        // Query students for each semester+section combo
+        const studentResults = await Promise.all(
+          Array.from(semesterSections.entries()).map(([sem, sections]) =>
+            supabase
+              .from("students")
+              .select("id, roll_no, semester, profiles(full_name)")
+              .eq("department_id", teacher.department_id)
+              .eq("semester", sem)
+              .in("section", Array.from(sections))
+              .order("roll_no")
+          )
+        );
+        const allStudents = studentResults.flatMap((r) => r.data ?? []);
+        const seen = new Set<string>();
+        const uniqueStudents = allStudents.filter((s) => {
+          if (seen.has(s.id)) return false;
+          seen.add(s.id);
+          return true;
+        });
+        setStudents(uniqueStudents as any ?? []);
+      }
+      // No fallback: teachers only see assigned students/subjects
       setLoading(false);
     }
     load();
@@ -133,10 +165,10 @@ export default function TeacherFeedbackPage() {
   }
 
   const typeColors: Record<string, string> = {
-    appreciation: "bg-emerald-500/10 text-emerald-700",
-    improvement: "bg-blue-500/10 text-blue-700",
-    concern: "bg-red-500/10 text-red-700",
-    general: "bg-gray-50 text-gray-800/80",
+    appreciation: "bg-emerald-50 text-emerald-700",
+    improvement: "bg-blue-50 text-blue-700",
+    concern: "bg-red-50 text-red-700",
+    general: "bg-gray-50 text-gray-700",
   };
 
   if (loading) {
@@ -266,7 +298,7 @@ export default function TeacherFeedbackPage() {
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-gray-800/80 line-clamp-2">
+                        <p className="text-sm text-gray-700 line-clamp-2">
                           {fb.message}
                         </p>
                         <p className="text-xs text-gray-400 mt-1">

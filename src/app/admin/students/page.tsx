@@ -1,21 +1,44 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { UserPlus } from "lucide-react";
 import StudentsClient from "./StudentsClient";
 
 export default async function AdminStudentsPage() {
   const user = await getUser();
   const supabase = await createClient();
 
-  // Fetch all students with their details
-  const { data: students } = await supabase
+  // Check if user is HOD (scope to department) or Principal (see all)
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  let departmentId: string | null = null;
+  let departmentName = "";
+
+  if (profile?.role === "hod") {
+    const { data: teacher } = await supabase
+      .from("teachers")
+      .select("department_id, departments(name)")
+      .eq("profile_id", user.id)
+      .single();
+    departmentId = teacher?.department_id ?? null;
+    departmentName = (teacher?.departments as any)?.name ?? "";
+  }
+
+  // Fetch students - scoped to department for HOD
+  let query = supabase
     .from("students")
     .select(
-      "id, roll_no, semester, batch, profiles(full_name, email), departments(name, full_name)"
+      "id, roll_no, semester, batch, section, profiles(full_name, email), departments(name, full_name)"
     )
     .order("roll_no");
+
+  if (departmentId) {
+    query = query.eq("department_id", departmentId);
+  }
+
+  const { data: students } = await query;
 
   // Get all marks to calculate averages
   const studentIds = (students ?? []).map((s) => s.id);
@@ -47,32 +70,15 @@ export default async function AdminStudentsPage() {
 
   return (
     <div className="space-y-6 max-w-7xl">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-gray-800">Students</h1>
-          <p className="text-sm text-gray-400 mt-1">
-            Manage student records and view performance
-          </p>
-        </div>
-        <Button size="sm" disabled>
-          <UserPlus className="h-4 w-4 mr-2" />
-          Add Student
-        </Button>
+      <div>
+        <h1 className="text-xl font-semibold text-gray-800">Students</h1>
+        <p className="text-sm text-gray-400 mt-1">
+          {departmentName ? `${departmentName} Department` : "All departments"} &middot;{" "}
+          {sortedStudents.length} students
+        </p>
       </div>
 
-      {/* Client Component with Search and Export */}
-      <StudentsClient students={sortedStudents} />
-
-      {/* Note */}
-      <Card className="bg-blue-50 border-blue-200">
-        <CardContent className="pt-6">
-          <p className="text-sm text-blue-800">
-            <strong>Note:</strong> To add, edit, or delete students, use the Supabase
-            dashboard or create custom admin tools. Student management features are
-            coming soon!
-          </p>
-        </CardContent>
-      </Card>
+      <StudentsClient students={sortedStudents} departmentId={departmentId} />
     </div>
   );
 }

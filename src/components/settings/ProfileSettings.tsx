@@ -124,7 +124,7 @@ export default function ProfileSettings({ userId, fullName, email, role, avatarU
             </div>
           </div>
 
-          <Button type="submit" disabled={saving || !isDirty} className="btn-ripple">
+          <Button type="submit" disabled={saving || !isDirty}>
             {saving ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (

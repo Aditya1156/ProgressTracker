@@ -16,6 +16,7 @@ interface Teacher {
   created_at: string;
   examsCount: number;
   feedbackCount: number;
+  assignmentsCount: number;
   profiles: any;
   departments: any;
 }
@@ -80,8 +81,29 @@ export default function TeachersClient({ teachers }: TeachersClientProps) {
         ),
       },
       {
+        accessorKey: "assignmentsCount",
+        header: ({ column }) => <SortableHeader column={column}>Subjects</SortableHeader>,
+        cell: ({ row }) => {
+          const count = row.original.assignmentsCount ?? 0;
+          return (
+            <span className="text-right block">
+              <Badge
+                variant={count === 0 ? "outline" : "secondary"}
+                className={`text-xs ${
+                  count === 0
+                    ? "border-amber-300 text-amber-700"
+                    : "bg-[#0f1b4c]/10 text-[#0f1b4c]"
+                }`}
+              >
+                {count}
+              </Badge>
+            </span>
+          );
+        },
+      },
+      {
         accessorKey: "examsCount",
-        header: ({ column }) => <SortableHeader column={column}>Exams Created</SortableHeader>,
+        header: ({ column }) => <SortableHeader column={column}>Exams</SortableHeader>,
         cell: ({ row }) => (
           <span className="text-right block text-sm font-medium">
             {row.original.examsCount ?? 0}
@@ -117,7 +139,7 @@ export default function TeachersClient({ teachers }: TeachersClientProps) {
     <div className="space-y-6">
       {/* Export Button */}
       <div className="flex justify-end">
-        <Button onClick={handleExport} variant="outline" size="sm" className="btn-ripple">
+        <Button onClick={handleExport} variant="outline" size="sm">
           <Download className="h-4 w-4 mr-2" />
           Export CSV
         </Button>

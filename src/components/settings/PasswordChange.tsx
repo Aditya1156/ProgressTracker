@@ -106,7 +106,7 @@ export default function PasswordChange() {
             )}
           </div>
 
-          <Button type="submit" disabled={saving} className="btn-ripple">
+          <Button type="submit" disabled={saving}>
             {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Update Password
           </Button>
